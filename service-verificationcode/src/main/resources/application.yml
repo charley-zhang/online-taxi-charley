@@ -1,0 +1,10 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: service-verificationcode
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
