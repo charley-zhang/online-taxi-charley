@@ -29,7 +29,6 @@ public class ForecastPriceService {
     private PriceRuleMapper priceRuleMapper;
 
 
-
     public ResponseResult forecastPrice(String depLongitude, String depLatiude, String destLongitude, String destLatiude){
 
         log.info("调用地图服务，查询距离和时长");
