@@ -1,5 +1,6 @@
 package com.charley.apipassenger.controller;
 
+import com.charley.apipassenger.remote.ServicePriceClient;
 import com.charley.apipassenger.service.ForecastPriceService;
 import com.charley.internalcommon.dto.ResponseResult;
 import com.charley.internalcommon.request.ForecastPriceDTO;
@@ -32,7 +33,6 @@ public class ForecastPriceController {
         log.info("目的地经度：" + destLongitude);
         log.info("目的地纬度：" + destLatiude);
 
-        log.info("调用计价服务，计算价格");
 
         return forecastPriceService.forecastPrice(depLongitude, depLatiude, destLongitude, destLatiude);
     }
