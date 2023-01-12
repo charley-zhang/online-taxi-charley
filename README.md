@@ -1,5 +1,5 @@
-各服务端口如下：
-服务名|端口号
+The service ports are as follows :
+Service name|Port number
 --- | ---
 api-passenger | 8081
 service-verificationcode | 8082
