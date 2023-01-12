@@ -1,6 +1,5 @@
 package com.charley.servicemap.controller;
 
-
 import com.charley.internalcommon.dto.ResponseResult;
 import com.charley.internalcommon.request.ForecastPriceDTO;
 import com.charley.servicemap.service.DirectionService;

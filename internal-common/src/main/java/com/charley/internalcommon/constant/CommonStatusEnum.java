@@ -30,7 +30,12 @@ public enum CommonStatusEnum {
     /**
      * 失败
      */
-    FAIL(0,"fail")
+    FAIL(0,"fail"),
+
+    /**
+     * 地图信息  1400 - 1499
+     */
+    MAP_DISTRICT_ERROR(1400, "请求地图错误")
 
 
 
