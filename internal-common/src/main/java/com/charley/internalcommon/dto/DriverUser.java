@@ -41,15 +41,15 @@ public class DriverUser {
     /**
      * 初次领取驾驶证日期
      */
-    private LocalDate getDriverLincenseData;
+    private LocalDate getDriverLicenseDate;
     /**
      * 驾驶证有效期起
      */
-    private LocalDate driverLincenseOn;
+    private LocalDate driverLicenseOn;
     /**
      * 驾驶证有效期止
      */
-    private LocalDate driverLincenseOff;
+    private LocalDate driverLicenseOff;
     /**
      * 是否巡游出租汽车： 1：是  ， 0： 否
      */

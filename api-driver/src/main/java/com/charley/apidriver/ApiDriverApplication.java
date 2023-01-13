@@ -1,4 +1,4 @@
-package com.charley.apiBoss;
+package com.charley.apidriver;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -8,8 +8,8 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 @SpringBootApplication
 @EnableDiscoveryClient
 @EnableFeignClients
-public class ApiBossApplication {
+public class ApiDriverApplication {
     public static void main(String[] args) {
-        SpringApplication.run(ApiBossApplication.class, args);
+        SpringApplication.run(ApiDriverApplication.class, args);
     }
 }

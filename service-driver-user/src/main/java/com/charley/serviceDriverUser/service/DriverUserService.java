@@ -5,6 +5,7 @@ import com.charley.internalcommon.dto.DriverUser;
 import com.charley.internalcommon.dto.ResponseResult;
 import com.charley.serviceDriverUser.mapper.DriverUserMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.jni.Local;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,7 +31,17 @@ public class DriverUserService {
         driverUser.setGmtCreate(now);
         driverUser.setGmtModified(now);
 
+        log.info(driverUser.toString());
+
         driverUserMapper.insert(driverUser);
+        return ResponseResult.success("");
+    }
+
+
+    public ResponseResult updateDriverUser(DriverUser driverUser){
+        LocalDateTime now = LocalDateTime.now();
+        driverUser.setGmtModified(now);
+        driverUserMapper.updateById(driverUser);
         return ResponseResult.success("");
     }
 }
