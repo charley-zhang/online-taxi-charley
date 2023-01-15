@@ -47,7 +47,7 @@ public class VerificationCodeService {
         // 存入redis
         System.out.println("存入redis");
         // key value 过期事件
-        String key = RedisPrefixUtils.generatorKeyByPhone(passengerPhone);
+        String key = RedisPrefixUtils.generatorKeyByPhone(passengerPhone, IdentityConstant.PASSENGER_IDENTITY);
         // 存入redis
         stringRedisTemplate.opsForValue().set(key, numberCode + "", 2, TimeUnit.MINUTES);
 
@@ -66,7 +66,7 @@ public class VerificationCodeService {
     public ResponseResult checkCode(String passengerPhone, String verificationCode){
 
         // 根据手机号去redis读取验证码  1 生成key   2 根据key获取value
-        String key = RedisPrefixUtils.generatorKeyByPhone(passengerPhone);
+        String key = RedisPrefixUtils.generatorKeyByPhone(passengerPhone, IdentityConstant.PASSENGER_IDENTITY);
         String codeRedis = stringRedisTemplate.opsForValue().get(key);
         System.out.println(key+"--->"+codeRedis);
 

@@ -15,6 +15,11 @@ public class VerificationCodeController {
     @Autowired
     private VerificationCodeService verificationCodeService;
 
+    /**
+     * 用户获取验证码
+     * @param verificationCodeDTO
+     * @return
+     */
     @GetMapping(value = "/verification-code")
     public ResponseResult verificationCode(@RequestBody VerificationCodeDTO verificationCodeDTO){
         String passengerPhone = verificationCodeDTO.getPassengerPhone();
@@ -24,7 +29,11 @@ public class VerificationCodeController {
     }
 
 
-
+    /**
+     * 用户校验验证码
+     * @param verificationCodeDTO
+     * @return
+     */
     @PostMapping(value = "/verification-code-check")
     public ResponseResult checkVerificationCode(@RequestBody VerificationCodeDTO verificationCodeDTO){
 

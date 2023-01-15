@@ -16,9 +16,9 @@ spring:
       server-addr: 127.0.0.1:8848
 
 
-logging:
-  level:
-    com.baomidou.mybatisplus: debug
-mybatis-plus:
-  configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#logging:
+#  level:
+#    com.baomidou.mybatisplus: debug
+#mybatis-plus:
+#  configuration:
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

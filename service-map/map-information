@@ -1,0 +1,23 @@
+服务创建
+{
+    "data": {
+        "name": "飞滴出行service",
+        "sid": 869138
+    },
+    "errcode": 10000,
+    "errdetail": null,
+    "errmsg": "OK"
+}
+
+
+终端创建
+{
+    "data": {
+        "name": "车辆1",
+        "tid": 622463574,
+        "sid": 869138
+    },
+    "errcode": 10000,
+    "errdetail": null,
+    "errmsg": "OK"
+}

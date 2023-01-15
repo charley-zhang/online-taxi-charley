@@ -48,7 +48,8 @@ public enum CommonStatusEnum {
 
     DRIVER_BIND_EXISTS(1503, "司机已经被绑定，请勿重复绑定"),
 
-    CAR_BIND_EXISTS(1504, "车辆已经被绑定，请勿重复绑定")
+    CAR_BIND_EXISTS(1504, "车辆已经被绑定，请勿重复绑定"),
+
 
 
 
