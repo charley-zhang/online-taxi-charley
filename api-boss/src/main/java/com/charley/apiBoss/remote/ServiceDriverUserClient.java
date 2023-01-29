@@ -1,6 +1,5 @@
 package com.charley.apiBoss.remote;
 
-import com.charley.apiBoss.controller.DriverCarBindingRelationshipController;
 import com.charley.internalcommon.dto.Car;
 import com.charley.internalcommon.dto.DriverCarBindingRelationship;
 import com.charley.internalcommon.dto.DriverUser;

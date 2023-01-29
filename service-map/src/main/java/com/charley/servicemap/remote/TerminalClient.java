@@ -5,12 +5,16 @@ import com.charley.internalcommon.constant.AmapConfigConstants;
 import com.charley.internalcommon.dto.ResponseResult;
 import com.charley.internalcommon.reponese.TerminalResponse;
 import lombok.extern.slf4j.Slf4j;
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -30,7 +34,7 @@ public class TerminalClient {
      * @param name
      * @return
      */
-    public ResponseResult<TerminalResponse> add(String name){
+    public ResponseResult<TerminalResponse> add(String name, String desc){
 
         // 拼装请求的url
         StringBuilder url = new StringBuilder();
@@ -39,6 +43,7 @@ public class TerminalClient {
         url.append("key="+amapKey);
         url.append("&sid="+amapSid);
         url.append("&name="+name);
+        url.append("&desc="+desc);
 
         log.info(url.toString());
 
@@ -51,5 +56,44 @@ public class TerminalClient {
         terminalResponse.setTid(tid);
 
         return ResponseResult.success(terminalResponse);
+    }
+
+    public ResponseResult<List<TerminalResponse>> aroundsearch(String center, Integer radius) {
+
+        // 拼装请求的url
+        StringBuilder url = new StringBuilder();
+        url.append(AmapConfigConstants.TERMINAL_AROUNDSEARCH);
+        url.append("?");
+        url.append("key="+amapKey);
+        url.append("&sid="+amapSid);
+        url.append("&center="+center);
+        url.append("&radius="+radius);
+
+        log.info("终端搜索请求url： "+url.toString());
+
+        ResponseEntity<String> stringResponseEntity = restTemplate.postForEntity(url.toString(), null, String.class);
+
+        // 解析终端搜索结果
+        String body = stringResponseEntity.getBody();
+        JSONObject result = JSONObject.fromObject(body);
+
+        List<TerminalResponse> terminalResponsesList = new ArrayList<>();
+
+        JSONArray results = result.getJSONObject("data").getJSONArray("results");
+        for (int i = 0; i < results.size(); i++) {
+            TerminalResponse terminalResponse = new TerminalResponse();
+
+            JSONObject jsonObject = results.getJSONObject(i);
+            long carId = jsonObject.getLong("desc");
+            String tid = jsonObject.getString("tid");
+            terminalResponse.setCarId(carId);
+            terminalResponse.setTid(tid);
+
+            terminalResponsesList.add(terminalResponse);
+        }
+
+        log.info(body);
+
+        return ResponseResult.success(terminalResponsesList);
     }
 }
