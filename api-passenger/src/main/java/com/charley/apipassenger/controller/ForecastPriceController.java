@@ -1,6 +1,6 @@
 package com.charley.apipassenger.controller;
 
-import com.charley.apipassenger.remote.ServicePriceClient;
+
 import com.charley.apipassenger.service.ForecastPriceService;
 import com.charley.internalcommon.dto.ResponseResult;
 import com.charley.internalcommon.request.ForecastPriceDTO;

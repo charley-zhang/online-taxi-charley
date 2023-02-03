@@ -1,4 +1,4 @@
-package com.charley.serviceorder.entity;
+package com.charley.internalcommon.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
@@ -94,6 +94,9 @@ public class OrderInfo implements Serializable {
      */
     private String fareType;
 
+    /**
+     * 运价版本
+     */
     private Integer fareVersion;
     /**
      * 接单时车辆经度
@@ -195,11 +198,13 @@ public class OrderInfo implements Serializable {
     /**
      * 创建时间
      */
-    private Date gmtCreate;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime gmtCreate;
     /**
      * 修改时间
      */
-    private Date gmtModified;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime gmtModified;
 
 
 }

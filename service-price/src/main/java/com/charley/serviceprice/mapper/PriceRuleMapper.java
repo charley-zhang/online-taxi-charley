@@ -1,5 +1,7 @@
 package com.charley.serviceprice.mapper;
 
+
+
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.charley.internalcommon.dto.PriceRule;
 import org.springframework.stereotype.Repository;
