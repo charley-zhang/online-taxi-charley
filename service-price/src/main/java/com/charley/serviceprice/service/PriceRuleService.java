@@ -24,7 +24,6 @@ public class PriceRuleService {
     private PriceRuleMapper priceRuleMapper;
 
     public ResponseResult add(PriceRule priceRule) {
-
         // 拼接 fareType
         String cityCode = priceRule.getCityCode();
         String vehicleType = priceRule.getVehicleType();
