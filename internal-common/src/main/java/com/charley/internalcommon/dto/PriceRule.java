@@ -24,13 +24,13 @@ public class PriceRule implements Serializable {
     /**
      * 起步价
      */
-    private double startFare;
+    private Double startFare;
     
     private Integer startMile;
     
-    private double unitPricePerMile;
+    private Double unitPricePerMile;
     
-    private double unitPricePerMinute;
+    private Double unitPricePerMinute;
     
     private Integer fareVersion;
     

@@ -31,10 +31,14 @@ public class PriceRuleController {
 
     @PostMapping(value = "/add")
     public ResponseResult add(@RequestBody PriceRule priceRule){
-
         log.info("priceRule : "+priceRule.toString());
-
         return priceRuleService.add(priceRule);
+    }
+
+    @PostMapping(value = "/edit")
+    public ResponseResult edit(@RequestBody PriceRule priceRule){
+        log.info("priceRule : "+priceRule.toString());
+        return priceRuleService.edit(priceRule);
     }
 }
 
