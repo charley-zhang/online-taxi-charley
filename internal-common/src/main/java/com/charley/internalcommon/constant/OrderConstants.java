@@ -2,6 +2,12 @@ package com.charley.internalcommon.constant;
 
 public class OrderConstants {
 
+
+    /**
+     * 订单无效
+     */
+    public static final  int ORDER_ONVALID = 0;
+
     /**
      * 1  订单开始
      */
@@ -10,7 +16,7 @@ public class OrderConstants {
     /**
      * 2  司机接单
      */
-    public static final int RECEIVE_ORDER = 2;
+    public static final int DRIVER_RECEIVE_ORDER = 2;
 
     /**
      * 3  去接乘客

@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.xml.ws.soap.Addressing;
-
 @RestController
 @Slf4j
 public class ForecastPriceController {
@@ -27,6 +25,8 @@ public class ForecastPriceController {
         String depLatiude = forecastPriceDTO.getDepLatiude();
         String destLongitude = forecastPriceDTO.getDestLongitude();
         String destLatiude = forecastPriceDTO.getDestLatiude();
+        String cityCode = forecastPriceDTO.getCityCode();
+        String vehicleType = forecastPriceDTO.getVehicleType();
 
         log.info("出发地经度：" + depLongitude);
         log.info("出发地纬度：" + depLatiude);
@@ -34,6 +34,7 @@ public class ForecastPriceController {
         log.info("目的地纬度：" + destLatiude);
 
 
-        return forecastPriceService.forecastPrice(depLongitude, depLatiude, destLongitude, destLatiude);
+
+        return forecastPriceService.forecastPrice(depLongitude, depLatiude, destLongitude, destLatiude, cityCode, vehicleType);
     }
 }

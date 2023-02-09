@@ -80,4 +80,9 @@ public class OrderRequest {
      */
     private Integer fareVersion;
 
+    /**
+     * 请求设备唯一码
+     */
+    private String deviceCode;
+
 }

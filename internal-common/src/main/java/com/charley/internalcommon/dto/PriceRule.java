@@ -1,6 +1,7 @@
 package com.charley.internalcommon.dto;
 
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 
@@ -11,6 +12,7 @@ import java.io.Serializable;
  * @since 2023-01-31 14:26:26
  */
 @Data
+@Accessors(chain = true)
 public class PriceRule implements Serializable {
     private static final long serialVersionUID = 122774746281575318L;
     /**

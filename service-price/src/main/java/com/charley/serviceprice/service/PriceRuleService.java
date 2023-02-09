@@ -104,4 +104,56 @@ public class PriceRuleService {
         priceRuleMapper.insert(priceRule);
         return ResponseResult.success("");
     }
+
+    public ResponseResult<PriceRule> getNewestVersion(String fareType) {
+        QueryWrapper<PriceRule> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("fare_type", fareType);
+
+        queryWrapper.orderByDesc("fare_version");
+
+        List<PriceRule> priceRules = priceRuleMapper.selectList(queryWrapper);
+        if (priceRules.size() > 0){
+            return ResponseResult.success(priceRules.get(0));
+        }
+
+        return ResponseResult.fail(CommonStatusEnum.PRICE_RULE_EMPTY.getCode(), CommonStatusEnum.PRICE_RULE_EMPTY.getValue());
+
+    }
+
+    public ResponseResult<Boolean> isNew(String fareType, int fareVersion) {
+        ResponseResult<PriceRule> newestVersionPriceRule = getNewestVersion(fareType);
+
+        if (newestVersionPriceRule.getCode() == CommonStatusEnum.PRICE_RULE_EMPTY.getCode()) {
+//            return ResponseResult.fail(CommonStatusEnum.PRICE_RULE_EMPTY.getCode(), CommonStatusEnum.PRICE_RULE_EMPTY.getValue());
+            return ResponseResult.success(false);
+        }
+
+        PriceRule priceRule = newestVersionPriceRule.getData();
+        Integer fareVersionDB = priceRule.getFareVersion();
+        if (fareVersionDB > fareVersion) {
+            return ResponseResult.success(false);
+        }
+
+        return ResponseResult.success(true);
+
+    }
+
+    public ResponseResult<Boolean> ifExists(PriceRule priceRule) {
+
+        String cityCode = priceRule.getCityCode();
+        String vehicleType = priceRule.getVehicleType();
+
+        QueryWrapper<PriceRule> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("city_code", cityCode);
+        queryWrapper.eq("vehicle_type", vehicleType);
+        queryWrapper.orderByDesc("fare_version");
+
+        List<PriceRule> priceRules = priceRuleMapper.selectList(queryWrapper);
+
+        if (priceRules.size() > 0){
+            return ResponseResult.success(true);
+        }
+        return ResponseResult.success(false);
+
+    }
 }
