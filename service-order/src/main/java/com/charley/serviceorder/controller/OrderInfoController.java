@@ -24,7 +24,7 @@ public class OrderInfoController {
 
 
     /**
-     * 创建订单
+     * 乘客创建订单
      * @param orderRequest
      * @return
      */

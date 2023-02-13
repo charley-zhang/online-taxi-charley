@@ -14,6 +14,11 @@ public class DicDistrictController {
     private DicDistrictService dicDistrictService;
 
 
+    /**
+     * 获取地区字典
+     * @param keywords
+     * @return
+     */
     @GetMapping(value = "/dic-district")
     public ResponseResult initDicDistrict(String keywords){
 

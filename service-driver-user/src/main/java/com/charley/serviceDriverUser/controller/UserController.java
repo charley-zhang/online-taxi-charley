@@ -4,6 +4,7 @@ import com.charley.internalcommon.constant.DriverCarConstants;
 import com.charley.internalcommon.dto.DriverUser;
 import com.charley.internalcommon.dto.ResponseResult;
 import com.charley.internalcommon.reponese.DriverUserExistsResponse;
+import com.charley.internalcommon.reponese.OrderDriverResponse;
 import com.charley.serviceDriverUser.service.DriverUserService;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONObject;
@@ -42,6 +43,7 @@ public class UserController {
 
     /**
      * 查询司机
+     * 检查手机号对应司机是否存在
      * 如果需要按照司机的多个条件做查询，那么此处用  /user
      * @param driverPhone
      * @return
@@ -64,6 +66,17 @@ public class UserController {
 
 
         return ResponseResult.success(response);
+    }
+
+
+    /**
+     * 根据车辆 ID，查询可以派单的司机的信息
+     * @param carId
+     * @return
+     */
+    @GetMapping(value = "/get-available-driver{carId}")
+    public ResponseResult<OrderDriverResponse> getAvailableDriver(@PathVariable("carId") Long carId){
+        return driverUserService.getAvailableDriver(carId);
     }
 
 

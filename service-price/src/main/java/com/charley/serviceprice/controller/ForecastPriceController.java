@@ -15,6 +15,11 @@ public class ForecastPriceController {
     @Autowired
     private ForecastPriceService forecastPriceService;
 
+    /**
+     * 计算预估价格
+     * @param forecastPriceDTO
+     * @return
+     */
     @PostMapping(value = "/forecast-price")
     public ResponseResult forecastPrice(@RequestBody ForecastPriceDTO forecastPriceDTO){
 

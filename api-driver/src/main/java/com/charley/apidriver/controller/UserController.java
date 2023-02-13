@@ -15,6 +15,11 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    /**
+     * 维护司机信息
+     * @param driverUser
+     * @return
+     */
     @PutMapping(value = "/user")
     public ResponseResult updateUser(@RequestBody DriverUser driverUser){
         return userService.updateUser(driverUser);

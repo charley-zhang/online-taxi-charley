@@ -130,6 +130,11 @@ public class OrderInfoService {
             // 获得终端
 
             // 解析终端
+            JSONArray result = JSONArray.fromObject(listResponseResult.getData());
+            for (int j = 0; i < result.size(); j++){
+                JSONObject jsonObject = result.getJSONObject(j);
+                long carId = Long.parseLong(jsonObject.getString("carId"));
+            }
 
             // 根据解析出来的终端，查询车辆信息
 

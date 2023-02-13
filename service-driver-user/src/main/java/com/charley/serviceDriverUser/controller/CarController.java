@@ -26,6 +26,11 @@ public class CarController {
     @Autowired
     private CarService carService;
 
+    /**
+     * 插入车辆信息
+     * @param car
+     * @return
+     */
     @PostMapping(value = "/car")
     public ResponseResult addCar(@RequestBody Car car){
         log.info(car.toString());
@@ -33,6 +38,11 @@ public class CarController {
     }
 
 
+    /**
+     * 根据车辆 id 查询车辆信息
+     * @param carId
+     * @return
+     */
     @GetMapping(value = "/car")
     public ResponseResult<Car> getCarById(Long carId){
         log.info(carId.toString());

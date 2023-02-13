@@ -18,6 +18,11 @@ public class PointController {
     @Autowired
     private PointService pointService;
 
+    /**
+     * 上传车辆经纬度信息
+     * @param apiDriverPointRequest
+     * @return
+     */
     @PostMapping(value = "/upload")
     public ResponseResult upload(@RequestBody ApiDriverPointRequest apiDriverPointRequest){
         log.info(apiDriverPointRequest.toString());

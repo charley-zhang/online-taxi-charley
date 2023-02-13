@@ -18,12 +18,22 @@ public class DriverCarBindingRelationshipController {
     @Autowired
     private DriverCarBindingRelationshipService driverCarBindingRelationshipService;
 
+    /**
+     * 绑定司机和车辆
+     * @param driverCarBindingRelationship
+     * @return
+     */
     @PostMapping(value = "/bind")
     public ResponseResult bind(@RequestBody DriverCarBindingRelationship driverCarBindingRelationship){
         return driverCarBindingRelationshipService.bind(driverCarBindingRelationship);
     }
 
 
+    /**
+     * 解绑司机和车辆
+     * @param driverCarBindingRelationship
+     * @return
+     */
     @PostMapping(value = "/unbind")
     public ResponseResult unbind(@RequestBody DriverCarBindingRelationship driverCarBindingRelationship){
         return driverCarBindingRelationshipService.unbind(driverCarBindingRelationship);

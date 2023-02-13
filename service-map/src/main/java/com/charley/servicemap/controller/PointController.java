@@ -16,6 +16,12 @@ public class PointController {
     @Autowired
     private PointService pointService;
 
+
+    /**
+     * 轨迹点位置上传
+     * @param pointRequest
+     * @return
+     */
     @PostMapping(value = "/upload")
     public ResponseResult upload(@RequestBody PointRequest pointRequest){
         return pointService.upload(pointRequest);

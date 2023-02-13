@@ -18,6 +18,11 @@ public class ForecastPriceController {
     private ForecastPriceService forecastPriceService;
 
 
+    /**
+     * 预估价格
+     * @param forecastPriceDTO
+     * @return
+     */
     @PostMapping(value = "/forecast-price")
     public ResponseResult forecastPrice(@RequestBody ForecastPriceDTO forecastPriceDTO){
 

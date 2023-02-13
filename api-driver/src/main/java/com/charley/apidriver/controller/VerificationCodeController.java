@@ -18,6 +18,11 @@ public class VerificationCodeController {
     @Autowired
     private VerificationCodeService verificationCodeService;
 
+    /**
+     * 司机获取验证码
+     * @param verificationCodeDTO
+     * @return
+     */
     @GetMapping(value = "/verification-code")
     public ResponseResult verificationcode(@RequestBody VerificationCodeDTO verificationCodeDTO){
         String driverPhone = verificationCodeDTO.getDriverPhone();

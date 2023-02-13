@@ -16,6 +16,12 @@ public class TrackController {
     @Autowired
     private TrackService trackService;
 
+
+    /**
+     * 创建轨迹
+     * @param tid
+     * @return
+     */
     @PostMapping(value = "/add")
     public ResponseResult<TrackResponse> add(String tid){
         return trackService.add(tid);

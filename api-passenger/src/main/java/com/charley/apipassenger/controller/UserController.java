@@ -15,6 +15,11 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    /**
+     * 查询乘客用户信息
+     * @param request
+     * @return
+     */
     @GetMapping(value = "/users")
     public ResponseResult getUser(HttpServletRequest request){
 

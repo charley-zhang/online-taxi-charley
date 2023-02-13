@@ -16,6 +16,11 @@ public class TokenController {
     @Autowired
     private TokenService tokenService;
 
+    /**
+     * 双token刷新
+     * @param tokenResponse
+     * @return
+     */
     @PostMapping(value = "/token-refresh")
     public ResponseResult refreshToken(@RequestBody TokenResponse tokenResponse){
 

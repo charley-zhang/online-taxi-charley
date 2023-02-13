@@ -13,6 +13,11 @@ public class DriectionController {
     @Autowired
     private DirectionService directionService;
 
+    /**
+     * 根据起点和终点的经纬度获取距离和时长
+     * @param forecastPriceDTO
+     * @return
+     */
     @GetMapping(value = "/driving")
     public ResponseResult driving(@RequestBody ForecastPriceDTO forecastPriceDTO){
 

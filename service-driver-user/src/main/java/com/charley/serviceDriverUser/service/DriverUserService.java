@@ -1,11 +1,16 @@
 package com.charley.serviceDriverUser.service;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.generator.IFill;
 import com.charley.internalcommon.constant.CommonStatusEnum;
 import com.charley.internalcommon.constant.DriverCarConstants;
+import com.charley.internalcommon.dto.DriverCarBindingRelationship;
 import com.charley.internalcommon.dto.DriverUser;
 import com.charley.internalcommon.dto.DriverUserWorkStatus;
 import com.charley.internalcommon.dto.ResponseResult;
+import com.charley.internalcommon.reponese.OrderDriverResponse;
+import com.charley.serviceDriverUser.mapper.DriverCarBindingRelationshipMapper;
 import com.charley.serviceDriverUser.mapper.DriverUserMapper;
 import com.charley.serviceDriverUser.mapper.DriverUserWorkStatusMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +33,9 @@ public class DriverUserService {
 
     @Autowired
     private DriverUserWorkStatusMapper driverUserWorkStatusMapper;
+
+    @Autowired
+    private DriverCarBindingRelationshipMapper driverCarBindingRelationshipMapper;
 
     public ResponseResult testGetDriverUser(){
         DriverUser driverUser = driverUserMapper.selectById(1);
@@ -78,5 +86,36 @@ public class DriverUserService {
 
         DriverUser driverUser = driverUsers.get(0);
         return ResponseResult.success(driverUser);
+    }
+
+    public ResponseResult<OrderDriverResponse> getAvailableDriver(Long carId) {
+        QueryWrapper<DriverCarBindingRelationship> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("car_id", carId);
+        queryWrapper.eq("bind_state", DriverCarConstants.DRIVER_CAR_BIND);
+        DriverCarBindingRelationship driverCarBindingRelationship = driverCarBindingRelationshipMapper.selectOne(queryWrapper);
+        Long driverId = driverCarBindingRelationship.getDriverId();
+
+        QueryWrapper<DriverUserWorkStatus> queryWrapper1 = new QueryWrapper<>();
+        queryWrapper1.eq("driver_id", driverId);
+        queryWrapper1.eq("work_status", DriverCarConstants.DRIVER_WORK_STATUS_START);
+
+        DriverUserWorkStatus driverUserWorkStatus = driverUserWorkStatusMapper.selectOne(queryWrapper1);
+        if (driverUserWorkStatus == null){
+            return ResponseResult.fail(CommonStatusEnum.AVAILABLE_DRIVER_EMPTY.getCode(), CommonStatusEnum.AVAILABLE_DRIVER_EMPTY.getValue());
+        }else {
+            QueryWrapper<DriverUser> queryWrapper2 = new QueryWrapper<>();
+            queryWrapper2.eq("id", driverId);
+            DriverUser driverUser = driverUserMapper.selectOne(queryWrapper2);
+
+            OrderDriverResponse orderDriverResponse = new OrderDriverResponse();
+            orderDriverResponse.setCarId(carId);
+            orderDriverResponse.setDriverId(driverId);
+            orderDriverResponse.setDriverPhone(driverUser.getDriverPhone());
+
+            return ResponseResult.success(orderDriverResponse);
+        }
+
+
+
     }
 }

@@ -18,6 +18,9 @@ public class DriverUserController {
     @Autowired
     private DriverUserService driverUserService;
 
+    @Autowired
+    private CarService carService;
+
     /**
      * 添加司机信息
      * @param driverUser
@@ -38,9 +41,13 @@ public class DriverUserController {
         return driverUserService.updateDriverUser(driverUser);
     }
 
-    @Autowired
-    private CarService carService;
 
+
+    /**
+     * 添加车辆信息
+     * @param car
+     * @return
+     */
     @PostMapping(value = "/car")
     public ResponseResult car(@RequestBody Car car){
         return carService.addCar(car);

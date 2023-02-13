@@ -19,12 +19,24 @@ public class TerminalController {
     @Autowired
     private TerminalService terminalService;
 
+    /**
+     * 创建终端
+     * @param name
+     * @param desc
+     * @return
+     */
     @PostMapping(value = "/add")
     public ResponseResult<TerminalResponse> add(String name, String desc){
         return terminalService.add(name, desc);
     }
 
 
+    /**
+     * 终端搜索
+     * @param center
+     * @param radius
+     * @return
+     */
     @PostMapping(value = "/aroundsearch")
     public ResponseResult<List<TerminalResponse>> aroundsearch(String center, Integer radius){
         return terminalService.aroundsearch(center, radius);

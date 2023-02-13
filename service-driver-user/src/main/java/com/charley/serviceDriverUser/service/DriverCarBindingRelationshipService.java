@@ -33,7 +33,7 @@ public class DriverCarBindingRelationshipService{
         QueryWrapper<DriverCarBindingRelationship> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("driver_id", driverCarBindingRelationship.getDriverId());
         queryWrapper.eq("car_id",driverCarBindingRelationship.getCarId());
-        queryWrapper.eq("bind_state", DriverCarConstants.DRIVER_CAR_BING);
+        queryWrapper.eq("bind_state", DriverCarConstants.DRIVER_CAR_BIND);
 
         Long integer = driverCarBindingRelationshipMapper.selectCount(queryWrapper);
         if (integer.intValue() > 0) {
@@ -43,7 +43,7 @@ public class DriverCarBindingRelationshipService{
         // 司机被绑定了
         queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("driver_id", driverCarBindingRelationship.getDriverId());
-        queryWrapper.eq("bind_state", DriverCarConstants.DRIVER_CAR_BING);
+        queryWrapper.eq("bind_state", DriverCarConstants.DRIVER_CAR_BIND);
         integer = driverCarBindingRelationshipMapper.selectCount(queryWrapper);
         if (integer.intValue() > 0) {
             return ResponseResult.fail(CommonStatusEnum.DRIVER_BIND_EXISTS.getCode(), CommonStatusEnum.DRIVER_BIND_EXISTS.getValue());
@@ -52,7 +52,7 @@ public class DriverCarBindingRelationshipService{
         // 车辆被绑定了
         queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("car_id",driverCarBindingRelationship.getCarId());
-        queryWrapper.eq("bind_state", DriverCarConstants.DRIVER_CAR_BING);
+        queryWrapper.eq("bind_state", DriverCarConstants.DRIVER_CAR_BIND);
         integer = driverCarBindingRelationshipMapper.selectCount(queryWrapper);
         if (integer.intValue() > 0) {
             return ResponseResult.fail(CommonStatusEnum.CAR_BIND_EXISTS.getCode(), CommonStatusEnum.CAR_BIND_EXISTS.getValue());
@@ -60,7 +60,7 @@ public class DriverCarBindingRelationshipService{
 
         LocalDateTime now = LocalDateTime.now();
         driverCarBindingRelationship.setBindingTime(now);
-        driverCarBindingRelationship.setBindState(DriverCarConstants.DRIVER_CAR_BING);
+        driverCarBindingRelationship.setBindState(DriverCarConstants.DRIVER_CAR_BIND);
         driverCarBindingRelationshipMapper.insert(driverCarBindingRelationship);
         return ResponseResult.success("");
     }
@@ -72,7 +72,7 @@ public class DriverCarBindingRelationshipService{
         Map<String, Object> map = new HashMap<>();
         map.put("driver_id",driverCarBindingRelationship.getDriverId());
         map.put("car_id",driverCarBindingRelationship.getCarId());
-        map.put("bind_state",DriverCarConstants.DRIVER_CAR_BING);
+        map.put("bind_state",DriverCarConstants.DRIVER_CAR_BIND);
 
         List<DriverCarBindingRelationship> driverCarBindingRelationships = driverCarBindingRelationshipMapper.selectByMap(map);
         if (driverCarBindingRelationships.isEmpty()){
