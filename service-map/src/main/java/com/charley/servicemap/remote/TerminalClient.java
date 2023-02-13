@@ -48,6 +48,7 @@ public class TerminalClient {
         log.info(url.toString());
 
         ResponseEntity<String> stringResponseEntity = restTemplate.postForEntity(url.toString(), null, String.class);
+        log.info(stringResponseEntity.toString());
         String body = stringResponseEntity.getBody();
         JSONObject result = JSONObject.fromObject(body);
         JSONObject data = result.getJSONObject("data");
@@ -73,6 +74,8 @@ public class TerminalClient {
 
         ResponseEntity<String> stringResponseEntity = restTemplate.postForEntity(url.toString(), null, String.class);
 
+        log.info("终端搜索请求结果： "+stringResponseEntity.getBody());
+
         // 解析终端搜索结果
         String body = stringResponseEntity.getBody();
         JSONObject result = JSONObject.fromObject(body);
@@ -84,7 +87,7 @@ public class TerminalClient {
             TerminalResponse terminalResponse = new TerminalResponse();
 
             JSONObject jsonObject = results.getJSONObject(i);
-            long carId = jsonObject.getLong("desc");
+            Long carId = Long.parseLong(jsonObject.getString("desc"));
             String tid = jsonObject.getString("tid");
             terminalResponse.setCarId(carId);
             terminalResponse.setTid(tid);

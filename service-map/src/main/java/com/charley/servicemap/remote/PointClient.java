@@ -48,13 +48,8 @@ public class PointClient {
         url.append("%5D");
 
         log.info("上传位置请求url :  "+url.toString());
-
         ResponseEntity<String> stringResponseEntity = restTemplate.postForEntity(URI.create(url.toString()), null, String.class);
-
         log.info("上传位置响应 ：  "+ stringResponseEntity.getBody());
-
-        String body = stringResponseEntity.getBody();
-
 
         return ResponseResult.success("");
     }
