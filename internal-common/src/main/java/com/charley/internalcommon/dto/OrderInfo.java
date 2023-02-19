@@ -109,7 +109,7 @@ public class OrderInfo implements Serializable {
     /**
      * 接单时间，派单成功时间
      */
-    private Date receiveOrderTime;
+    private LocalDateTime receiveOrderTime;
     /**
      * 机动车驾驶证号
      */

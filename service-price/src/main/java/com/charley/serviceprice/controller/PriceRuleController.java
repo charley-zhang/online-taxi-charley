@@ -5,6 +5,7 @@ package com.charley.serviceprice.controller;
 
 import com.charley.internalcommon.dto.PriceRule;
 import com.charley.internalcommon.dto.ResponseResult;
+import com.charley.internalcommon.request.PriceRuleIsNewRequest;
 import com.charley.serviceprice.service.PriceRuleService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,14 +61,12 @@ public class PriceRuleController {
 
     /**
      * 判断当前的计价规则是否是最新的
-     * @param fareType
-     * @param fareVersion
+     * @param priceRuleIsNewRequest
      * @return
      */
-    @GetMapping(value = "/is-new")
-    public ResponseResult<Boolean> isNew(@RequestParam String fareType, @RequestParam Integer fareVersion){
-        fareType = fareType.replace("%24", "$");
-        return priceRuleService.isNew(fareType, fareVersion);
+    @PostMapping(value = "/is-new")
+    public ResponseResult<Boolean> isNew(@RequestBody PriceRuleIsNewRequest priceRuleIsNewRequest){
+        return priceRuleService.isNew(priceRuleIsNewRequest.getFareType(), priceRuleIsNewRequest.getFareVersion());
     }
 
     /**

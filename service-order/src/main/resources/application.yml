@@ -27,3 +27,6 @@ spring:
 logging:
   level:
     com.com.baomidou: debug
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
