@@ -68,8 +68,9 @@ public class OrderInfoService {
 
         // 需要判断计价规则的版本是否是最新
         ResponseResult<Boolean> aNew = servicePriceClient.isNew(orderRequest.getFareType(), orderRequest.getFareVersion());
-        if (!aNew.getData())
+        if (!aNew.getData()) {
             return ResponseResult.fail(CommonStatusEnum.PRICE_RULE_CHANGED.getCode(), CommonStatusEnum.PRICE_RULE_CHANGED.getValue());
+        }
 
         // 需要判断下单的设备是否是黑名单设备
         if (isBlackDevice(orderRequest)) {

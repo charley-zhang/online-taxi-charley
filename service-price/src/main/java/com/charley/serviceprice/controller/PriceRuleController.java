@@ -66,6 +66,7 @@ public class PriceRuleController {
      */
     @GetMapping(value = "/is-new")
     public ResponseResult<Boolean> isNew(@RequestParam String fareType, @RequestParam Integer fareVersion){
+        fareType = fareType.replace("%24", "$");
         return priceRuleService.isNew(fareType, fareVersion);
     }
 

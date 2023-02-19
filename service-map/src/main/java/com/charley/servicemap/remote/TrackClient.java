@@ -36,10 +36,12 @@ public class TrackClient {
         url.append("&sid="+amapSid);
         url.append("&tid="+tid);
 
-        log.info(url.toString());
+        log.info("创建轨迹的请求： " + url.toString());
 
         ResponseEntity<String> stringResponseEntity = restTemplate.postForEntity(url.toString(), null, String.class);
+
         String body = stringResponseEntity.getBody();
+        log.info("创建轨迹的响应： " + body);
         JSONObject result = JSONObject.fromObject(body);
         JSONObject data = result.getJSONObject("data");
         // 轨迹 id 轨迹名称
