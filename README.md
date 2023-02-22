@@ -15,3 +15,4 @@ The service ports are as follows :
 | service-order            | 8007        |
 | api-boss                 | 8087        |
 | api-driver               | 8088        |
+| sse-driver-client-web    | 9000        |

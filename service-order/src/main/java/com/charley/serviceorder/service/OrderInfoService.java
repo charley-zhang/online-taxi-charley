@@ -21,6 +21,8 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -56,7 +58,8 @@ public class OrderInfoService {
     @Autowired
     private ServiceMapClient serviceMapClient;
 
-
+    @Autowired
+    private RedissonClient redissonClient;
 
 
     public ResponseResult add(OrderRequest orderRequest) {
@@ -119,7 +122,7 @@ public class OrderInfoService {
      * 实时订单派单逻辑
      * @param orderInfo
      */
-    public void dispatchRealTimeOrder(OrderInfo orderInfo) {
+    public synchronized void dispatchRealTimeOrder(OrderInfo orderInfo) {
 
         // 2km
         String depLatitude = orderInfo.getDepLatitude();
@@ -163,9 +166,14 @@ public class OrderInfoService {
                     String licenseId = orderDriverResponse.getLicenseId();
                     String vehicleNo = orderDriverResponse.getVehicleNo();
 
+                    String lockKey = (driverId+"").intern();
+                    RLock lock = redissonClient.getLock(lockKey);
+                    lock.lock();
+
 //                    isDriverOrderGoingOn
                     // 判断司机 是否有进行中的订单
                     if (isDriverOrderGoingOn(driverId) > 0) {
+                        lock.unlock();
                         continue ;
                     }
                     // 订单直接匹配司机
@@ -173,6 +181,9 @@ public class OrderInfoService {
                     QueryWrapper<Car> carQueryWrapper = new QueryWrapper<>();
                     carQueryWrapper.eq("id", carId);
 
+                    /*
+                        设置订单中和司机车辆相关的信息
+                     */
                     // 查询当前司机信息
                     orderInfo.setDriverId(driverId);
                     orderInfo.setDriverPhone(driverPhone);
@@ -189,6 +200,7 @@ public class OrderInfoService {
 
                     orderInfoMapper.updateById(orderInfo);
 
+                    lock.unlock();
 
                     // 退出，不再进行司机的查找
                     break radius;
