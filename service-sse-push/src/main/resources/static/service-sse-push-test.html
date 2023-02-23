@@ -13,13 +13,14 @@
 
 </body>
 <script type="text/javascript">
-    driverId = 1;
+    userId = 1;
+    identity = 2;
     source = null;
 
     if (window.EventCounts){
         console.log("此浏览器支持sse");
         // 链接的建立
-        source = new EventSource("http://127.0.0.1:9000/connect/" + driverId);
+        source = new EventSource("http://127.0.0.1:9000/connect?userId=" + userId+"&identity="+identity);
 
         // 监听服务的推送的消息
         source.addEventListener("message", function (e) {
@@ -43,7 +44,7 @@
         source.close();
         // 服务端map的移除
         httpRequest = new XMLHttpRequest();
-        httpRequest.open("get", "http://127.0.0.1:9000/close/"+driverId);
+        httpRequest.open("get", "http://127.0.0.1:9000/close?" + userId+"&identity="+identity);
         httpRequest.send();
     }
 </script>

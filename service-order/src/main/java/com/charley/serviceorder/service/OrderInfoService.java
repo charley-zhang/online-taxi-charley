@@ -3,6 +3,7 @@ package com.charley.serviceorder.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.charley.internalcommon.constant.CommonStatusEnum;
+import com.charley.internalcommon.constant.IdentityConstant;
 import com.charley.internalcommon.constant.OrderConstants;
 import com.charley.internalcommon.dto.Car;
 import com.charley.internalcommon.dto.OrderInfo;
@@ -17,6 +18,7 @@ import com.charley.serviceorder.mapper.OrderInfoMapper;
 import com.charley.serviceorder.remote.ServiceDriverUserClient;
 import com.charley.serviceorder.remote.ServiceMapClient;
 import com.charley.serviceorder.remote.ServicePriceClient;
+import com.charley.serviceorder.remote.ServiceSsePushClient;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONArray;
@@ -60,6 +62,9 @@ public class OrderInfoService {
 
     @Autowired
     private RedissonClient redissonClient;
+
+    @Autowired
+    private ServiceSsePushClient serviceSsePushClient;
 
 
     public ResponseResult add(OrderRequest orderRequest) {
@@ -200,23 +205,31 @@ public class OrderInfoService {
 
                     orderInfoMapper.updateById(orderInfo);
 
+
+                    // 通知司机
+                    JSONObject driverContent = new JSONObject();
+                    driverContent.put("passengerId", orderInfo.getPassengerId());
+                    driverContent.put("passengerPhone", orderInfo.getPassengerPhone());
+                    driverContent.put("departure", orderInfo.getDeparture());
+                    driverContent.put("depLongitude", orderInfo.getDepLongitude());
+                    driverContent.put("depLatitude", orderInfo.getDepLatitude());
+
+                    driverContent.put("destination", orderInfo.getDestination());
+                    driverContent.put("destLongitude", orderInfo.getDestLongitude());
+                    driverContent.put("destLatitude", orderInfo.getDestLatitude());
+
+                    serviceSsePushClient.push(driverId, IdentityConstant.DRIVER_IDENTITY, driverContent.toString());
+
+
                     lock.unlock();
 
-                    // 退出，不再进行司机的查找
+                    // 退出，不再进行司机的查找，如果派单成功，则退出循环
                     break radius;
 
                 }
+
             }
 
-
-
-
-
-        // 根据解析出来的终端，查询车辆信息
-
-        // 找到符合的车辆，进行派单
-
-        // 如过派单成功，则退出循环
         }
 
     }

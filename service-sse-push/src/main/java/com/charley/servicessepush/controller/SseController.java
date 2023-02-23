@@ -1,5 +1,6 @@
 package com.charley.servicessepush.controller;
 
+import com.charley.internalcommon.util.SseprefixUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,6 +12,9 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * @author Charley_Zhang
+ */
 @RestController
 @Slf4j
 public class SseController {
@@ -19,30 +23,34 @@ public class SseController {
 
     /**
      * 建立链接
-     * @param driverId
+     * @param userId
+     * @param identity
      * @return
      */
-    @GetMapping(value = "/connect/{driverId}")
-    public SseEmitter connect(@PathVariable String driverId){
-        log.info("司机Id：" + driverId);
+    @GetMapping(value = "/connect")
+    public SseEmitter connect(@RequestParam Long userId, @RequestParam String identity){
+        log.info("用户id：" + userId + "， 身份类型："+identity);
         SseEmitter sseEmitter = new SseEmitter(0L);
-        sseEmitterMap.put(driverId, sseEmitter);
+        String sseMapKey = SseprefixUtils.generatorSseKey(userId,identity);
+        sseEmitterMap.put(sseMapKey, sseEmitter);
         return sseEmitter;
     }
 
 
     /**
      * 发送消息
-     * @param driverId 消息接收者
+     * @param userId 消息接收者
+     * @param identity 身份类型
      * @param content 消息具体的内容
      * @return
      */
     @GetMapping(value = "/push")
-    public String push(@RequestParam String driverId, @RequestParam String content){
-
+    public String push(@RequestParam Long userId, @RequestParam String identity, @RequestParam String content){
+        log.info("用户id："+userId + "，身份："+identity+"消息："+content);
+        String sseMapKey = SseprefixUtils.generatorSseKey(userId,identity);
         try {
-            if (sseEmitterMap.containsKey(driverId)) {
-                sseEmitterMap.get(driverId).send(content);
+            if (sseEmitterMap.containsKey(sseMapKey)) {
+                sseEmitterMap.get(sseMapKey).send(content);
             }else {
                 return "推送失败";
             }
@@ -52,19 +60,21 @@ public class SseController {
         }
 
 
-        return "给用户：" + driverId + "发送了消息：" + content;
+        return "给用户：" + sseMapKey + "发送了消息：" + content;
     }
 
     /**
      * 关闭链接
-     * @param driverId
+     * @param userId 用户id
+     * @param identity  身份标识
      * @return
      */
-    @GetMapping(value = "/close/{driverId}")
-    public String close(@PathVariable String driverId){
-        log.info("close方法执行"  + driverId);
-        if (sseEmitterMap.containsKey(driverId)){
-            sseEmitterMap.remove(driverId);
+    @GetMapping(value = "/close")
+    public String close(@RequestParam Long userId, @RequestParam String identity){
+        String sseMapKey = SseprefixUtils.generatorSseKey(userId,identity);
+        log.info("close方法执行"  + sseMapKey);
+        if (sseEmitterMap.containsKey(sseMapKey)){
+            sseEmitterMap.remove(sseMapKey);
         }
         return "移除成功";
     }

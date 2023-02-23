@@ -5,10 +5,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
 
+/**
+ * @author Charley_Zhang
+ */
 @SpringBootApplication
 @EnableDiscoveryClient
-public class SseDriverClientWeb {
+public class ServiceSsePushApplication {
     public static void main(String[] args) {
-        SpringApplication.run(SseDriverClientWeb.class, args);
+        SpringApplication.run(ServiceSsePushApplication.class, args);
     }
 }

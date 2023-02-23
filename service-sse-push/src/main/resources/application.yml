@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: sse-driver-client-web
+    name: service-sse-push
   cloud:
     nacos:
       discovery:
