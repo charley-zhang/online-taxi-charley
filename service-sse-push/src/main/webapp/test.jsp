@@ -7,9 +7,13 @@
 
 <body>
 <h1>模拟司机客户端</h1>
-
+<button onclick="setMessageContext('鼠标点击了')">测试message展示</button>
 <div id="message">展示服务端推送过来消息的地方</div>
 
 </body>
-
+<script type="text/javascript">
+    function setMessageContext(content){
+        document.getElementById("message").innerHTML += (content + '<br />')
+    }
+</script>
 </html>
