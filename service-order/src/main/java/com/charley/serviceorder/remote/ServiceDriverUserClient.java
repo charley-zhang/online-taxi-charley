@@ -1,5 +1,6 @@
 package com.charley.serviceorder.remote;
 
+import com.charley.internalcommon.dto.Car;
 import com.charley.internalcommon.dto.ResponseResult;
 import com.charley.internalcommon.reponese.OrderDriverResponse;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -14,4 +15,7 @@ public interface ServiceDriverUserClient {
 
     @GetMapping(value = "/get-available-driver{carId}")
     public ResponseResult<OrderDriverResponse> getAvailableDriver(@PathVariable("carId") Long carId);
+
+    @GetMapping(value = "/car")
+    public ResponseResult<Car> getCarById(@RequestParam Long carId);
 }

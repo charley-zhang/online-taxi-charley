@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>乘客监听页面</title>
+</head>
+
+<body>
+<h1>模拟司机客户端</h1>
+<button onclick="setMessageContext('鼠标点击了')">测试message展示</button>
+<button onclick="sourceClose()">关闭链接</button>
+<div id="message">展示服务端推送过来消息的地方</div>
+
+</body>
+<script type="text/javascript">
+    userId = 1;
+    identity = 1;
+    source = null;
+
+    if (window.EventCounts){
+        console.log("此浏览器支持sse");
+        // 链接的建立
+        source = new EventSource("http://127.0.0.1:9000/connect?userId=" + userId+"&identity="+identity);
+
+        // 监听服务的推送的消息
+        source.addEventListener("message", function (e) {
+            content = e.data;
+            console.log(content);
+
+            setMessageContext(content);
+        })
+
+    }else {
+        setMessageContext("此浏览器不支持sse")
+    }
+
+    function setMessageContext(content){
+        document.getElementById("message").innerHTML += (content + '<br />')
+    }
+
+    function sourceClose(){
+        console.info("close方法执行");
+        // 客户端source的关闭
+        source.close();
+        // 服务端map的移除
+        httpRequest = new XMLHttpRequest();
+        httpRequest.open("get", "http://127.0.0.1:9000/close?" + userId+"&identity="+identity);
+        httpRequest.send();
+    }
+</script>
+</html>

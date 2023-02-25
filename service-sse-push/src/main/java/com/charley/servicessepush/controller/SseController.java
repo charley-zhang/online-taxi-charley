@@ -13,7 +13,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @author Charley_Zhang
+ * @Author Charley_Zhang
+ * @Date 2023/2/26 3:46
+ * @ClassName: SseController
+ * @Version 1.0GG
+ * @Description:
  */
 @RestController
 @Slf4j
@@ -22,36 +26,42 @@ public class SseController {
     public static Map<String, SseEmitter> sseEmitterMap = new HashMap<>();
 
     /**
-     * 建立链接
-     * @param userId
-     * @param identity
-     * @return
+     * @Author: Charley_Zhang
+     * @MethodName: connect
+     * @param: userId
+     * @param: identity
+     * @return: org.springframework.web.servlet.mvc.method.annotation.SseEmitter
+     * @Date: 2023/2/26 3:47
+     * @Description: 建立链接
      */
     @GetMapping(value = "/connect")
-    public SseEmitter connect(@RequestParam Long userId, @RequestParam String identity){
-        log.info("用户id：" + userId + "， 身份类型："+identity);
+    public SseEmitter connect(@RequestParam Long userId, @RequestParam String identity) {
+        log.info("用户id：" + userId + "， 身份类型：" + identity);
         SseEmitter sseEmitter = new SseEmitter(0L);
-        String sseMapKey = SseprefixUtils.generatorSseKey(userId,identity);
+        String sseMapKey = SseprefixUtils.generatorSseKey(userId, identity);
         sseEmitterMap.put(sseMapKey, sseEmitter);
         return sseEmitter;
     }
 
 
     /**
-     * 发送消息
-     * @param userId 消息接收者
-     * @param identity 身份类型
-     * @param content 消息具体的内容
-     * @return
+     * @Author: Charley_Zhang
+     * @MethodName: push
+     * @param: userId 消息接收者
+     * @param: identity 身份类型
+     * @param: content 消息具体的内容
+     * @return: java.lang.String
+     * @Date: 2023/2/26 3:32
+     * @Description: 发送消息
      */
     @GetMapping(value = "/push")
-    public String push(@RequestParam Long userId, @RequestParam String identity, @RequestParam String content){
-        log.info("用户id："+userId + "，身份："+identity+"消息："+content);
-        String sseMapKey = SseprefixUtils.generatorSseKey(userId,identity);
+    public String push(@RequestParam Long userId, @RequestParam String identity, @RequestParam String content) {
+        log.info("用户id：" + userId + "，身份：" + identity + "消息：" + content);
+        String sseMapKey = SseprefixUtils.generatorSseKey(userId, identity);
         try {
             if (sseEmitterMap.containsKey(sseMapKey)) {
                 sseEmitterMap.get(sseMapKey).send(content);
-            }else {
+            } else {
                 return "推送失败";
             }
 
@@ -63,17 +73,21 @@ public class SseController {
         return "给用户：" + sseMapKey + "发送了消息：" + content;
     }
 
+
     /**
-     * 关闭链接
-     * @param userId 用户id
-     * @param identity  身份标识
-     * @return
+     * @Author: Charley_Zhang
+     * @MethodName: close
+     * @param: userId 用户id
+     * @param: identity 身份标识
+     * @return: java.lang.String
+     * @Date: 2023/2/26 3:37
+     * @Description: 关闭链接
      */
     @GetMapping(value = "/close")
-    public String close(@RequestParam Long userId, @RequestParam String identity){
-        String sseMapKey = SseprefixUtils.generatorSseKey(userId,identity);
-        log.info("close方法执行"  + sseMapKey);
-        if (sseEmitterMap.containsKey(sseMapKey)){
+    public String close(@RequestParam Long userId, @RequestParam String identity) {
+        String sseMapKey = SseprefixUtils.generatorSseKey(userId, identity);
+        log.info("close方法执行" + sseMapKey);
+        if (sseEmitterMap.containsKey(sseMapKey)) {
             sseEmitterMap.remove(sseMapKey);
         }
         return "移除成功";
