@@ -22,6 +22,13 @@ import org.springframework.stereotype.Service;
 
 import java.util.concurrent.TimeUnit;
 
+/**
+ * @Author Charley_Zhang
+ * @Date 2023/2/26 23:44
+ * @ClassName: VerificationCodeService
+ * @Version 1.0
+ * @Description: 验证码服务
+ */
 @Service
 @Slf4j
 public class VerificationCodeService {
@@ -35,50 +42,63 @@ public class VerificationCodeService {
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
 
-    public ResponseResult checkAndSendVerificationCode(String driverPhone){
+    /**
+     * @Author: Charley_Zhang
+     * @MethodName: checkAndSendVerificationCode
+     * @param: driverPhone
+     * @paramType [java.lang.String]
+     * @return: com.charley.internalcommon.dto.ResponseResult
+     * @Date: 2023/2/26 23:45
+     * @Description: 司机用户获取验证码
+     */
+    public ResponseResult checkAndSendVerificationCode(String driverPhone) {
         // 查询 service-driver-user ，该手机号的司机是否存在
         ResponseResult<DriverUserExistsResponse> driverUserExistsResponseResponseResult = serviceDriverUserClient.checkDriver(driverPhone);
         DriverUserExistsResponse data = driverUserExistsResponseResponseResult.getData();
         int ifExists = data.getIfExists();
-        if (ifExists == DriverCarConstants.DRIVER_NOT_EXISTS){
-            return ResponseResult.fail(CommonStatusEnum.DRIVER_NOT_EXISTS.getCode(),CommonStatusEnum.DRIVER_NOT_EXISTS.getValue());
+        if (ifExists == DriverCarConstants.DRIVER_NOT_EXISTS) {
+            return ResponseResult.fail(CommonStatusEnum.DRIVER_NOT_EXISTS.getCode(), CommonStatusEnum.DRIVER_NOT_EXISTS.getValue());
         }
-        log.info(driverPhone+"的司机存在");
+        log.info(driverPhone + "的司机存在");
 
         // 获取验证码
         ResponseResult<NumberCodeReponese> numberCodeResult = serviceVerificationCodeClient.getNumberCode(6);
         NumberCodeReponese numberCodeReponese = numberCodeResult.getData();
         int numberCode = numberCodeReponese.getNumberCode();
-        log.info("验证码："+ numberCode);
+        log.info("验证码：" + numberCode);
 
         // 调用第三方发送验证码
 
         // 存入 redis  1 key  2 存入value
         String key = RedisPrefixUtils.generatorKeyByPhone(driverPhone, IdentityConstant.DRIVER_IDENTITY);
-        stringRedisTemplate.opsForValue().set(key, numberCode+"", 2, TimeUnit.MINUTES);
+        stringRedisTemplate.opsForValue().set(key, numberCode + "", 2, TimeUnit.MINUTES);
 
         return ResponseResult.success("");
     }
 
 
     /**
-     * 校验验证码
-     * @param driverPhone  手机号
-     * @param verificationCode  验证码
-     * @return
+     * @Author: Charley_Zhang
+     * @MethodName: checkCode
+     * @param: driverPhone      手机号
+     * @param: verificationCode     验证码
+     * @paramType [java.lang.String, java.lang.String]
+     * @return: com.charley.internalcommon.dto.ResponseResult
+     * @Date: 2023/2/26 23:45
+     * @Description: 司机用户校验验证码
      */
-    public ResponseResult checkCode(String driverPhone, String verificationCode){
+    public ResponseResult checkCode(String driverPhone, String verificationCode) {
 
         // 根据手机号去redis读取验证码  1 生成key   2 根据key获取value
         String key = RedisPrefixUtils.generatorKeyByPhone(driverPhone, IdentityConstant.DRIVER_IDENTITY);
         String codeRedis = stringRedisTemplate.opsForValue().get(key);
-        System.out.println(key+"--->"+codeRedis);
+        System.out.println(key + "--->" + codeRedis);
 
         // 校验验证码
-        if (StringUtils.isBlank(codeRedis)){
+        if (StringUtils.isBlank(codeRedis)) {
             return ResponseResult.fail(CommonStatusEnum.VERIFICATION_CODE_ERROR.getCode(), CommonStatusEnum.VERIFICATION_CODE_ERROR.getValue());
         }
-        if (!verificationCode.trim().equals(codeRedis)){
+        if (!verificationCode.trim().equals(codeRedis)) {
             return ResponseResult.fail(CommonStatusEnum.VERIFICATION_CODE_ERROR.getCode(), CommonStatusEnum.VERIFICATION_CODE_ERROR.getValue());
         }
 

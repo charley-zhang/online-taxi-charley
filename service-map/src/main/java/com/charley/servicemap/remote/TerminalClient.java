@@ -16,6 +16,13 @@ import org.springframework.web.client.RestTemplate;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @Author Charley_Zhang
+ * @Date 2023/2/27 0:34
+ * @ClassName: TerminalClient
+ * @Version 1.0
+ * @Description: 远程调用终端服务客户端
+ */
 @Service
 @Slf4j
 public class TerminalClient {
@@ -29,21 +36,27 @@ public class TerminalClient {
     @Autowired
     private RestTemplate restTemplate;
 
+
     /**
-     * 远程请求  https://tsapi.amap.com/v1/track/terminal/add
-     * @param name
-     * @return
+     * @Author: Charley_Zhang
+     * @MethodName: add
+     * @param: name
+     * @param: desc
+     * @paramType [java.lang.String, java.lang.String]
+     * @return: com.charley.internalcommon.dto.ResponseResult<com.charley.internalcommon.reponese.TerminalResponse>
+     * @Date: 2023/2/27 0:35
+     * @Description: 新建终端  远程请求  https://tsapi.amap.com/v1/track/terminal/add
      */
-    public ResponseResult<TerminalResponse> add(String name, String desc){
+    public ResponseResult<TerminalResponse> add(String name, String desc) {
 
         // 拼装请求的url
         StringBuilder url = new StringBuilder();
         url.append(AmapConfigConstants.TERMINAL_ADD);
         url.append("?");
-        url.append("key="+amapKey);
-        url.append("&sid="+amapSid);
-        url.append("&name="+name);
-        url.append("&desc="+desc);
+        url.append("key=" + amapKey);
+        url.append("&sid=" + amapSid);
+        url.append("&name=" + name);
+        url.append("&desc=" + desc);
 
         log.info(url.toString());
 
@@ -59,22 +72,32 @@ public class TerminalClient {
         return ResponseResult.success(terminalResponse);
     }
 
+    /**
+     * @Author: Charley_Zhang
+     * @MethodName: aroundsearch
+     * @param: center
+     * @param: radius
+     * @paramType [java.lang.String, java.lang.Integer]
+     * @return: com.charley.internalcommon.dto.ResponseResult<java.util.List < com.charley.internalcommon.reponese.TerminalResponse>>
+     * @Date: 2023/2/27 0:35
+     * @Description: 终端搜索
+     */
     public ResponseResult<List<TerminalResponse>> aroundsearch(String center, Integer radius) {
 
         // 拼装请求的url
         StringBuilder url = new StringBuilder();
         url.append(AmapConfigConstants.TERMINAL_AROUNDSEARCH);
         url.append("?");
-        url.append("key="+amapKey);
-        url.append("&sid="+amapSid);
-        url.append("&center="+center);
-        url.append("&radius="+radius);
+        url.append("key=" + amapKey);
+        url.append("&sid=" + amapSid);
+        url.append("&center=" + center);
+        url.append("&radius=" + radius);
 
-        log.info("终端搜索请求url： "+url.toString());
+        log.info("终端搜索请求url： " + url.toString());
 
         ResponseEntity<String> stringResponseEntity = restTemplate.postForEntity(url.toString(), null, String.class);
 
-        log.info("终端搜索请求结果： "+stringResponseEntity.getBody());
+        log.info("终端搜索请求结果： " + stringResponseEntity.getBody());
 
         // 解析终端搜索结果
         String body = stringResponseEntity.getBody();

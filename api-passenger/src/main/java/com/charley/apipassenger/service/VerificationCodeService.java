@@ -18,6 +18,13 @@ import org.springframework.stereotype.Service;
 
 import java.util.concurrent.TimeUnit;
 
+/**
+ * @Author Charley_Zhang
+ * @Date 2023/2/26 23:58
+ * @ClassName: VerificationCodeService
+ * @Version 1.0
+ * @Description: 验证码服务
+ */
 @Service
 public class VerificationCodeService {
 
@@ -32,11 +39,15 @@ public class VerificationCodeService {
     private ServicePassengerUserClient servicePassengerUserClient;
 
     /**
-     * 生成验证码
-     * @param passengerPhone  手机号
-     * @return
+     * @Author: Charley_Zhang
+     * @MethodName: generatorCode
+     * @param: passengerPhone 手机号
+     * @paramType [java.lang.String]
+     * @return: com.charley.internalcommon.dto.ResponseResult
+     * @Date: 2023/2/26 23:58
+     * @Description: 生成验证码
      */
-    public ResponseResult generatorCode(String passengerPhone){
+    public ResponseResult generatorCode(String passengerPhone) {
         // 调用验证码服务，获取验证码
         System.out.println("调用验证码服务，获取验证码");
         ResponseResult<NumberCodeReponese> numberCodeReponeseResponseResult = serviceVefificationCodeClient.getNumberCode(6);
@@ -58,23 +69,27 @@ public class VerificationCodeService {
 
 
     /**
-     * 校验验证码
-     * @param passengerPhone  手机号
-     * @param verificationCode  验证码
-     * @return
+     * @Author: Charley_Zhang
+     * @MethodName: checkCode
+     * @param: passengerPhone  手机号
+     * @param: verificationCode  验证码
+     * @paramType [java.lang.String, java.lang.String]
+     * @return: com.charley.internalcommon.dto.ResponseResult
+     * @Date: 2023/2/26 23:59
+     * @Description: 校验验证码
      */
-    public ResponseResult checkCode(String passengerPhone, String verificationCode){
+    public ResponseResult checkCode(String passengerPhone, String verificationCode) {
 
         // 根据手机号去redis读取验证码  1 生成key   2 根据key获取value
         String key = RedisPrefixUtils.generatorKeyByPhone(passengerPhone, IdentityConstant.PASSENGER_IDENTITY);
         String codeRedis = stringRedisTemplate.opsForValue().get(key);
-        System.out.println(key+"--->"+codeRedis);
+        System.out.println(key + "--->" + codeRedis);
 
         // 校验验证码
-        if (StringUtils.isBlank(codeRedis)){
+        if (StringUtils.isBlank(codeRedis)) {
             return ResponseResult.fail(CommonStatusEnum.VERIFICATION_CODE_ERROR.getCode(), CommonStatusEnum.VERIFICATION_CODE_ERROR.getValue());
         }
-        if (!verificationCode.trim().equals(codeRedis)){
+        if (!verificationCode.trim().equals(codeRedis)) {
             return ResponseResult.fail(CommonStatusEnum.VERIFICATION_CODE_ERROR.getCode(), CommonStatusEnum.VERIFICATION_CODE_ERROR.getValue());
         }
 
@@ -105,7 +120,6 @@ public class VerificationCodeService {
 
         return ResponseResult.success(tokenResponse);
     }
-
 
 
 }

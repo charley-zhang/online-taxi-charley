@@ -19,7 +19,6 @@ import com.charley.serviceorder.remote.ServiceDriverUserClient;
 import com.charley.serviceorder.remote.ServiceMapClient;
 import com.charley.serviceorder.remote.ServicePriceClient;
 import com.charley.serviceorder.remote.ServiceSsePushClient;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -32,14 +31,16 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
- * (OrderInfo)表服务接口
- *
- * @author makejava
- * @since 2023-01-30 16:57:42
+ * @Author Charley_Zhang
+ * @Date 2023/2/27 0:48
+ * @ClassName: OrderInfoService
+ * @Version 1.0
+ * @Description: 订单服务
  */
 @Service
 @Slf4j
@@ -67,13 +68,22 @@ public class OrderInfoService {
     private ServiceSsePushClient serviceSsePushClient;
 
 
+    /**
+     * @Author: Charley_Zhang
+     * @MethodName: add
+     * @param: orderRequest
+     * @paramType [com.charley.internalcommon.request.OrderRequest]
+     * @return: com.charley.internalcommon.dto.ResponseResult
+     * @Date: 2023/2/26 22:44
+     * @Description: 新建订单
+     */
     public ResponseResult add(OrderRequest orderRequest) {
-        log.info("orderRequest: "+orderRequest.toString());
+        log.info("orderRequest: " + orderRequest.toString());
 
         //查询城市是否有可用的司机
         ResponseResult<Boolean> availableDriver = serviceDriverUserClient.isAvailableDriver(orderRequest.getAddress());
         log.info("城市是否有司机结果" + availableDriver);
-        if (!availableDriver.getData()){
+        if (!availableDriver.getData()) {
             return ResponseResult.fail(CommonStatusEnum.CITY_DRIVER_EMPTY.getCode(), CommonStatusEnum.CITY_DRIVER_EMPTY.getValue(), String.valueOf(false));
         }
 
@@ -95,7 +105,7 @@ public class OrderInfoService {
         }
 
         // 判断下单的城市和计价规则是否正常
-        if (!isPriceRuleExists(orderRequest)){
+        if (!isPriceRuleExists(orderRequest)) {
             return ResponseResult.fail(CommonStatusEnum.CITY_SERVICE_NOT_SERVICE.getCode(), CommonStatusEnum.CITY_SERVICE_NOT_SERVICE.getValue());
         }
 
@@ -108,7 +118,7 @@ public class OrderInfoService {
         // 创建订单
         OrderInfo orderInfo = new OrderInfo();
 
-        BeanUtils.copyProperties(orderRequest,orderInfo);
+        BeanUtils.copyProperties(orderRequest, orderInfo);
         orderInfo.setOrderStatus(OrderConstants.ORDER_START);
 
         LocalDateTime now = LocalDateTime.now();
@@ -117,18 +127,37 @@ public class OrderInfoService {
 
         orderInfoMapper.insert(orderInfo);
 
-        // 派单 dispatchRealTimeOrder
-        dispatchRealTimeOrder(orderInfo);
+
+        for (int i = 0; i < 6; i++) {
+            // 派单 dispatchRealTimeOrder
+            int result = dispatchRealTimeOrder(orderInfo);
+            if (result == 1) {
+                break;
+            }
+            // 等待20s
+            try {
+                Thread.sleep(20000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
 
         return ResponseResult.success("");
     }
 
-    /**
-     * 实时订单派单逻辑
-     * @param orderInfo
-     */
-    public synchronized void dispatchRealTimeOrder(OrderInfo orderInfo) {
 
+    /**
+     * @Author: Charley_Zhang
+     * @MethodName: dispatchRealTimeOrder
+     * @param: orderInfo
+     * @paramType [com.charley.internalcommon.dto.OrderInfo]
+     * @return: int
+     * @Date: 2023/2/26 16:09
+     * @Description: 实时订单派单逻辑  如果返回 1 ，就派单成功
+     */
+    public synchronized int dispatchRealTimeOrder(OrderInfo orderInfo) {
+        log.info("循环一次");
+        int result = 0;
         // 2km
         String depLatitude = orderInfo.getDepLatitude();
         String depLongitude = orderInfo.getDepLongitude();
@@ -141,7 +170,7 @@ public class OrderInfoService {
 
         // 搜索结果
         ResponseResult<List<TerminalResponse>> listResponseResult = null;
-        radius :
+        radius:
         for (int i = 0; i < radiusList.size(); i++) {
 
             listResponseResult = serviceMapClient.terminalAroundSearch(center, radiusList.get(i));
@@ -151,7 +180,11 @@ public class OrderInfoService {
 
             // 解析终端
             List<TerminalResponse> data = listResponseResult.getData();
-            for (int j = 0; j < data.size(); j++){
+
+            // 为了测试是否从地图中获取到司机
+//            List<TerminalResponse> data = new ArrayList<>();
+
+            for (int j = 0; j < data.size(); j++) {
                 TerminalResponse terminalResponse = data.get(j);
                 Long carId = terminalResponse.getCarId();
                 String longitude = terminalResponse.getLongitude();
@@ -162,7 +195,7 @@ public class OrderInfoService {
                 if (availableDriver.getCode() == CommonStatusEnum.AVAILABLE_DRIVER_EMPTY.getCode()) {
                     log.info("没有车辆ID：" + carId + ", 对应的司机");
                     continue;
-                }else {
+                } else {
                     log.info("找到了正在出车的司机，他的车辆ID： " + carId);
 
                     OrderDriverResponse orderDriverResponse = availableDriver.getData();
@@ -171,7 +204,7 @@ public class OrderInfoService {
                     String licenseId = orderDriverResponse.getLicenseId();
                     String vehicleNo = orderDriverResponse.getVehicleNo();
 
-                    String lockKey = (driverId+"").intern();
+                    String lockKey = (driverId + "").intern();
                     RLock lock = redissonClient.getLock(lockKey);
                     lock.lock();
 
@@ -179,7 +212,7 @@ public class OrderInfoService {
                     // 判断司机 是否有进行中的订单
                     if (isDriverOrderGoingOn(driverId) > 0) {
                         lock.unlock();
-                        continue ;
+                        continue;
                     }
                     // 订单直接匹配司机
                     // 查询当前车辆信息
@@ -237,6 +270,7 @@ public class OrderInfoService {
 
                     serviceSsePushClient.push(orderInfo.getPassengerId(), IdentityConstant.PASSENGER_IDENTITY, passengerContent.toString());
 
+                    result = 1;
                     lock.unlock();
 
                     // 退出，不再进行司机的查找，如果派单成功，则退出循环
@@ -247,11 +281,20 @@ public class OrderInfoService {
             }
 
         }
-
+        return result;
     }
 
 
-    private  boolean isPriceRuleExists(OrderRequest orderRequest){
+    /**
+     * @Author: Charley_Zhang
+     * @MethodName: isPriceRuleExists
+     * @param: orderRequest
+     * @paramType [com.charley.internalcommon.request.OrderRequest]
+     * @return: boolean
+     * @Date: 2023/2/26 22:44
+     * @Description: 判断计价规则是否存在
+     */
+    private boolean isPriceRuleExists(OrderRequest orderRequest) {
         String fareType = orderRequest.getFareType();
         int index = fareType.indexOf("$");
         String cityCode = fareType.substring(0, index);
@@ -263,6 +306,15 @@ public class OrderInfoService {
 
     }
 
+    /**
+     * @Author: Charley_Zhang
+     * @MethodName: isBlackDevice
+     * @param: orderRequest
+     * @paramType [com.charley.internalcommon.request.OrderRequest]
+     * @return: boolean
+     * @Date: 2023/2/26 22:45
+     * @Description: 判断是否是黑名单
+     */
     private boolean isBlackDevice(OrderRequest orderRequest) {
 
 
@@ -278,10 +330,10 @@ public class OrderInfoService {
             if (i >= 2) {
                 // 当前设备超过下单次数
                 return true;
-            }else {
+            } else {
                 stringRedisTemplate.opsForValue().increment(deviceCodeKey);
             }
-        }else {
+        } else {
             stringRedisTemplate.opsForValue().setIfAbsent(deviceCodeKey, "1", 1L, TimeUnit.MINUTES);
         }
         return false;
@@ -289,15 +341,19 @@ public class OrderInfoService {
 
 
     /**
-     * 判断是否有 业务中的订单
-     * @param passengerId
-     * @return
+     * @Author: Charley_Zhang
+     * @MethodName: isPassengerOrderGoingOn
+     * @param: passengerId
+     * @paramType [java.lang.Long]
+     * @return: int
+     * @Date: 2023/2/26 22:45
+     * @Description: 判断是否有 业务中的订单
      */
-    private int isPassengerOrderGoingOn(Long passengerId){
+    private int isPassengerOrderGoingOn(Long passengerId) {
         //判断有正在进行的订单，不允许下单
         QueryWrapper<OrderInfo> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("passenger_id", passengerId);
-        queryWrapper.and(wrapper->wrapper.eq("order_status", OrderConstants.ORDER_START)
+        queryWrapper.and(wrapper -> wrapper.eq("order_status", OrderConstants.ORDER_START)
                 .or().eq("order_status", OrderConstants.DRIVER_RECEIVE_ORDER)
                 .or().eq("order_status", OrderConstants.DRIVER_TO_PICK_UP_PASSENGER)
                 .or().eq("order_status", OrderConstants.DRIVER_ARRIVED_DEPARTURE)
@@ -311,15 +367,19 @@ public class OrderInfoService {
     }
 
     /**
-     * 判断是否有 业务中的订单
-     * @param driverId
-     * @return
+     * @Author: Charley_Zhang
+     * @MethodName: isDriverOrderGoingOn
+     * @param: driverId
+     * @paramType [java.lang.Long]
+     * @return: int
+     * @Date: 2023/2/26 22:46
+     * @Description: 判断是否有 业务中的订单
      */
-    private int isDriverOrderGoingOn(Long driverId){
+    private int isDriverOrderGoingOn(Long driverId) {
         //判断有正在进行的订单，不允许下单
         QueryWrapper<OrderInfo> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("driver_id", driverId);
-        queryWrapper.and(wrapper->wrapper
+        queryWrapper.and(wrapper -> wrapper
                 .eq("order_status", OrderConstants.DRIVER_RECEIVE_ORDER)
                 .or().eq("order_status", OrderConstants.DRIVER_TO_PICK_UP_PASSENGER)
                 .or().eq("order_status", OrderConstants.DRIVER_ARRIVED_DEPARTURE)
@@ -331,5 +391,36 @@ public class OrderInfoService {
 
         return validOrderNumber;
 
+    }
+
+    /**
+     * @Author: Charley_Zhang
+     * @MethodName: toPickUpPassenger
+     * @param: orderRequest
+     * @paramType [com.charley.internalcommon.request.OrderRequest]
+     * @return: com.charley.internalcommon.dto.ResponseResult
+     * @Date: 2023/2/26 22:47
+     * @Description: 去接乘客
+     */
+    public ResponseResult toPickUpPassenger(OrderRequest orderRequest) {
+        Long orderId = orderRequest.getOrderId();
+        LocalDateTime toPickUpPassengerTime = orderRequest.getToPickUpPassengerTime();
+        String toPickUpPassengerLongitude = orderRequest.getToPickUpPassengerLongitude();
+        String toPickUpPassengerLatitude = orderRequest.getToPickUpPassengerLatitude();
+        String toPickUpPassengerAddress = orderRequest.getToPickUpPassengerAddress();
+
+        QueryWrapper<OrderInfo> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("id", orderId);
+        OrderInfo orderInfo = orderInfoMapper.selectOne(queryWrapper);
+
+        orderInfo.setToPickUpPassengerAddress(toPickUpPassengerAddress);
+        orderInfo.setPickUpPassengerLongitude(toPickUpPassengerLongitude);
+        orderInfo.setPickUpPassengerLatitude(toPickUpPassengerLatitude);
+        orderInfo.setToPickUpPassengerTime(LocalDateTime.now());
+        orderInfo.setOrderStatus(OrderConstants.DRIVER_TO_PICK_UP_PASSENGER);
+
+        orderInfoMapper.updateById(orderInfo);
+
+        return ResponseResult.success("");
     }
 }

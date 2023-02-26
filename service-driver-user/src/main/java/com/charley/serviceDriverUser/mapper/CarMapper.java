@@ -5,12 +5,11 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.springframework.stereotype.Repository;
 
 /**
- * <p>
- *  Mapper 接口
- * </p>
- *
- * @author Charlry
- * @since 2023-01-13
+ * @Author Charley_Zhang
+ * @Date 2023/2/27 0:09
+ * @ClassName: CarMapper
+ * @Version 1.0
+ * @Description: 与 数据库car 链接的工具类
  */
 @Repository
 public interface CarMapper extends BaseMapper<Car> {

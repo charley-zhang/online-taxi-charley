@@ -7,11 +7,13 @@ import java.time.LocalDateTime;
 import java.util.Date;
 import java.io.Serializable;
 
+
 /**
- * (OrderInfo)实体类
- *
- * @author makejava
- * @since 2023-01-30 16:57:37
+ * @Author Charley_Zhang
+ * @Date 2023/2/26 22:40
+ * @ClassName: OrderInfo
+ * @Version 1.0
+ * @Description:  (OrderInfo)实体类
  */
 @Data
 public class OrderInfo implements Serializable {
@@ -121,7 +123,8 @@ public class OrderInfo implements Serializable {
     /**
      * 司机去接乘客出发时间
      */
-    private Date toPickUpPassengerTime;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime toPickUpPassengerTime;
     /**
      * 去接乘客时，司机的经度
      */

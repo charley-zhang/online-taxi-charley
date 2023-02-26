@@ -12,6 +12,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+/**
+ * @Author Charley_Zhang
+ * @Date 2023/2/27 0:38
+ * @ClassName: MapDirectionClient
+ * @Version 1.0
+ * @Description: 路径规划远程调用客户端
+ */
 @Service
 @Slf4j
 public class MapDirectionClient {
@@ -23,12 +30,23 @@ public class MapDirectionClient {
     private RestTemplate restTemplate;
 
 
-
-    public DirectionResponse direction(String depLongitude, String depLatiude, String destLongitude, String destLatiude){
+    /**
+     * @Author: Charley_Zhang
+     * @MethodName: direction
+     * @param: depLongitude
+     * @param: depLatiude
+     * @param: destLongitude
+     * @param: destLatiude
+     * @paramType [java.lang.String, java.lang.String, java.lang.String, java.lang.String]
+     * @return: com.charley.internalcommon.reponese.DirectionResponse
+     * @Date: 2023/2/27 0:39
+     * @Description: 根据起点经纬度和终点经纬度获取距离 （米）和时长 （分钟）
+     */
+    public DirectionResponse direction(String depLongitude, String depLatiude, String destLongitude, String destLatiude) {
 
         /**
          *  组装请求调用url
-         *  
+         *
          *  https://restapi.amap.com/v3/direction/driving ?
          *  origin=116.481028,39.989643 & destination=116.465302,40.004717 & extensions=all & output=json & key=855fdd30e0365567e41e840f2a05c967
          */
@@ -59,7 +77,16 @@ public class MapDirectionClient {
     }
 
 
-    private DirectionResponse parseDirectionEntity(String directionString){
+    /**
+     * @Author: Charley_Zhang
+     * @MethodName: parseDirectionEntity
+     * @param: directionString
+     * @paramType [java.lang.String]
+     * @return: com.charley.internalcommon.reponese.DirectionResponse
+     * @Date: 2023/2/27 0:39
+     * @Description: 返回信息的解析
+     */
+    private DirectionResponse parseDirectionEntity(String directionString) {
 
         DirectionResponse directionResponse = null;
 
@@ -68,21 +95,21 @@ public class MapDirectionClient {
             // 最外层
             JSONObject result = JSONObject.fromObject(directionString);
 
-            if (result.has(AmapConfigConstants.STATUS)){
+            if (result.has(AmapConfigConstants.STATUS)) {
                 int status = result.getInt(AmapConfigConstants.STATUS);
-                if (status == 1){
-                    if (result.has(AmapConfigConstants.ROUTE)){
+                if (status == 1) {
+                    if (result.has(AmapConfigConstants.ROUTE)) {
                         JSONObject routeObject = result.getJSONObject(AmapConfigConstants.ROUTE);
                         JSONArray pathArray = routeObject.getJSONArray(AmapConfigConstants.PATHS);
                         JSONObject pathObject = pathArray.getJSONObject(0);
 
                         directionResponse = new DirectionResponse();
 
-                        if (pathObject.has(AmapConfigConstants.DISTANCE)){
+                        if (pathObject.has(AmapConfigConstants.DISTANCE)) {
                             int distance = pathObject.getInt(AmapConfigConstants.DISTANCE);
                             directionResponse.setDistance(distance);
                         }
-                        if (pathObject.has(AmapConfigConstants.DURATION)){
+                        if (pathObject.has(AmapConfigConstants.DURATION)) {
                             int duration = pathObject.getInt(AmapConfigConstants.DURATION);
                             directionResponse.setDuration(duration);
                         }
@@ -90,7 +117,7 @@ public class MapDirectionClient {
                 }
             }
 
-        }catch (Exception e){
+        } catch (Exception e) {
 
         }
 

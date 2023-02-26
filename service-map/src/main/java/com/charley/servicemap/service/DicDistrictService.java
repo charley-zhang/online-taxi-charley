@@ -14,6 +14,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+/**
+ * @Author Charley_Zhang
+ * @Date 2023/2/27 0:31
+ * @ClassName: DicDistrictService
+ * @Version 1.0
+ * @Description: 地区字典服务
+ */
 @Service
 @Slf4j
 public class DicDistrictService {
@@ -25,7 +32,16 @@ public class DicDistrictService {
     private DicDistrictMapper dicDistrictMapper;
 
 
-    public ResponseResult initDicDistrict(String keywords){
+    /**
+     * @Author: Charley_Zhang
+     * @MethodName: initDicDistrict
+     * @param: keywords
+     * @paramType [java.lang.String]
+     * @return: com.charley.internalcommon.dto.ResponseResult
+     * @Date: 2023/2/27 0:31
+     * @Description: 获取地区字典
+     */
+    public ResponseResult initDicDistrict(String keywords) {
 
         // 请求地图
         String dicDistrictResult = mapDicDistractClient.dicDistrict(keywords);
@@ -34,7 +50,7 @@ public class DicDistrictService {
         // 解析结果
         JSONObject dicDistrictJsonObject = JSONObject.fromObject(dicDistrictResult);
         int status = dicDistrictJsonObject.getInt(AmapConfigConstants.STATUS);
-        if (status != 1){
+        if (status != 1) {
             return ResponseResult.fail(CommonStatusEnum.MAP_DISTRICT_ERROR.getCode(), CommonStatusEnum.MAP_DISTRICT_ERROR.getValue());
         }
 
@@ -46,14 +62,14 @@ public class DicDistrictService {
             String countryAddressName = countryJsonObject.getString(AmapConfigConstants.NAME);
             String countryParentAddressCode = "0";
             String countryLevel = countryJsonObject.getString(AmapConfigConstants.LEVEL);
-            if (countryLevel.equals(AmapConfigConstants.STREET)){
+            if (countryLevel.equals(AmapConfigConstants.STREET)) {
                 continue;
             }
 
             insertDicDistrict(countryAddressCode, countryAddressName, countryLevel, countryParentAddressCode);
 
             JSONArray provinceJsonArray = countryJsonObject.getJSONArray(AmapConfigConstants.DISTRICTS);
-            for (int p = 0; p < provinceJsonArray.size(); p++){
+            for (int p = 0; p < provinceJsonArray.size(); p++) {
 
                 JSONObject provinceJsonObject = provinceJsonArray.getJSONObject(p);
 
@@ -61,7 +77,7 @@ public class DicDistrictService {
                 String provinceAddressName = provinceJsonObject.getString(AmapConfigConstants.NAME);
                 String provinceParentAddressCode = countryAddressCode;
                 String provinceLevel = provinceJsonObject.getString(AmapConfigConstants.LEVEL);
-                if (provinceLevel.equals(AmapConfigConstants.STREET)){
+                if (provinceLevel.equals(AmapConfigConstants.STREET)) {
                     continue;
                 }
 
@@ -69,7 +85,7 @@ public class DicDistrictService {
 
                 JSONArray cityArray = provinceJsonObject.getJSONArray(AmapConfigConstants.DISTRICTS);
 
-                for (int city = 0; city < cityArray.size(); city++){
+                for (int city = 0; city < cityArray.size(); city++) {
 
                     JSONObject cityJsonObject = cityArray.getJSONObject(city);
 
@@ -78,7 +94,7 @@ public class DicDistrictService {
                     String cityParentAddressCode = provinceAddressCode;
                     String cityLevel = cityJsonObject.getString(AmapConfigConstants.LEVEL);
 
-                    if (cityLevel.equals(AmapConfigConstants.STREET)){
+                    if (cityLevel.equals(AmapConfigConstants.STREET)) {
                         continue;
                     }
 
@@ -86,7 +102,7 @@ public class DicDistrictService {
 
                     JSONArray districtArray = cityJsonObject.getJSONArray(AmapConfigConstants.DISTRICTS);
 
-                    for (int d = 0; d < districtArray.size(); d++){
+                    for (int d = 0; d < districtArray.size(); d++) {
 
                         JSONObject districtJsonObject = districtArray.getJSONObject(d);
 
@@ -94,7 +110,7 @@ public class DicDistrictService {
                         String districtAddressName = districtJsonObject.getString(AmapConfigConstants.NAME);
                         String districtParentAddressCode = cityAddressCode;
                         String districtLevel = districtJsonObject.getString(AmapConfigConstants.LEVEL);
-                        if (districtLevel.equals(AmapConfigConstants.STREET)){
+                        if (districtLevel.equals(AmapConfigConstants.STREET)) {
                             continue;
                         }
 
@@ -109,7 +125,19 @@ public class DicDistrictService {
     }
 
 
-    public void insertDicDistrict(String addressCode, String addressName, String level, String parentAddressCode){
+    /**
+     * @Author: Charley_Zhang
+     * @MethodName: insertDicDistrict
+     * @param: addressCode
+     * @param: addressName
+     * @param: level
+     * @param: parentAddressCode
+     * @paramType [java.lang.String, java.lang.String, java.lang.String, java.lang.String]
+     * @return: void
+     * @Date: 2023/2/27 0:32
+     * @Description: 插入数据信息 dic_district
+     */
+    private void insertDicDistrict(String addressCode, String addressName, String level, String parentAddressCode) {
         // 数据库对象
         DicDistrict district = new DicDistrict();
         district.setAddressCode(addressCode);
@@ -123,17 +151,17 @@ public class DicDistrictService {
         dicDistrictMapper.insert(district);
     }
 
-    public int generateLevel(String level){
+    private int generateLevel(String level) {
         int levelInt = 0;
 
-        switch (level.trim()){
-            case "province" :
+        switch (level.trim()) {
+            case "province":
                 levelInt = 1;
                 break;
-            case "city" :
+            case "city":
                 levelInt = 2;
                 break;
-            case "district" :
+            case "district":
                 levelInt = 3;
                 break;
         }

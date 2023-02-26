@@ -12,6 +12,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+/**
+ * @Author Charley_Zhang
+ * @Date 2023/2/27 0:36
+ * @ClassName: ServiceClient
+ * @Version 1.0
+ * @Description: 远程调用高德服务客户端
+ */
 @Service
 @Slf4j
 public class ServiceClient {
@@ -22,14 +29,23 @@ public class ServiceClient {
     @Autowired
     private RestTemplate restTemplate;
 
-    public ResponseResult add(String name){
+    /**
+     * @Author: Charley_Zhang
+     * @MethodName: add
+     * @param: name
+     * @paramType [java.lang.String]
+     * @return: com.charley.internalcommon.dto.ResponseResult
+     * @Date: 2023/2/27 0:36
+     * @Description: 创建服务
+     */
+    public ResponseResult add(String name) {
 
         // 拼装请求的url
         StringBuilder url = new StringBuilder();
         url.append(AmapConfigConstants.SERVICE_ADD_URL);
         url.append("?");
-        url.append("key="+key);
-        url.append("&name="+name);
+        url.append("key=" + key);
+        url.append("&name=" + name);
 
 
         log.info(url.toString());

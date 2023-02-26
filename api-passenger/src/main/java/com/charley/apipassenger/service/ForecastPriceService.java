@@ -16,14 +16,20 @@ public class ForecastPriceService {
     private ServicePriceClient servicePriceClient;
 
     /**
-     * 根据出发和目的地经纬度，计算预估价格
-     * @param depLongitude
-     * @param depLatiude
-     * @param destLongitude
-     * @param destLatiude
-     * @return
+     * @Author: Charley_Zhang
+     * @MethodName: forecastPrice
+     * @param: depLongitude
+     * @param: depLatiude
+     * @param: destLongitude
+     * @param: destLatiude
+     * @param: cityCode
+     * @param: vehicleType
+     * @paramType [java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String]
+     * @return: com.charley.internalcommon.dto.ResponseResult
+     * @Date: 2023/2/26 23:55
+     * @Description: 根据出发和目的地经纬度，计算预估价格
      */
-    public ResponseResult forecastPrice(String depLongitude, String depLatiude, String destLongitude, String destLatiude, String cityCode, String vehicleType){
+    public ResponseResult forecastPrice(String depLongitude, String depLatiude, String destLongitude, String destLatiude, String cityCode, String vehicleType) {
 
         log.info("调用计价服务，计算价格");
 

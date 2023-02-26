@@ -13,6 +13,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+/**
+ * @Author Charley_Zhang
+ * @Date 2023/2/27 0:33
+ * @ClassName: TrackClient
+ * @Version 1.0
+ * @Description: 远程调用轨迹服务客户端
+ */
 @Service
 @Slf4j
 public class TrackClient {
@@ -26,15 +33,24 @@ public class TrackClient {
     @Autowired
     private RestTemplate restTemplate;
 
-    public ResponseResult<TrackResponse> add(String tid){
+    /**
+     * @Author: Charley_Zhang
+     * @MethodName: add
+     * @param: tid
+     * @paramType [java.lang.String]
+     * @return: com.charley.internalcommon.dto.ResponseResult<com.charley.internalcommon.reponese.TrackResponse>
+     * @Date: 2023/2/27 0:34
+     * @Description: 创建轨迹
+     */
+    public ResponseResult<TrackResponse> add(String tid) {
 
         // 拼装请求的url
         StringBuilder url = new StringBuilder();
         url.append(AmapConfigConstants.TRACK_ADD);
         url.append("?");
-        url.append("key="+amapKey);
-        url.append("&sid="+amapSid);
-        url.append("&tid="+tid);
+        url.append("key=" + amapKey);
+        url.append("&sid=" + amapSid);
+        url.append("&tid=" + tid);
 
         log.info("创建轨迹的请求： " + url.toString());
 
@@ -48,7 +64,7 @@ public class TrackClient {
         String trid = data.getString("trid");
 
         String trname = "";
-        if (data.has("trname"))trname = StringUtils.isEmpty(data.getString("trname"))? "":data.getString("trname");
+        if (data.has("trname")) trname = StringUtils.isEmpty(data.getString("trname")) ? "" : data.getString("trname");
 
         TrackResponse trackResponse = new TrackResponse();
         trackResponse.setTrid(trid);

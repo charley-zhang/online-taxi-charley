@@ -8,6 +8,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+/**
+ * @Author Charley_Zhang
+ * @Date 2023/2/27 0:28
+ * @ClassName: DirectionService
+ * @Version 1.0
+ * @Description: 路径规划服务
+ */
 @Service
 @Slf4j
 public class DirectionService {
@@ -16,20 +23,24 @@ public class DirectionService {
     private MapDirectionClient mapDirectionClient;
 
     /**
-     * 根据起点经纬度和终点经纬度获取距离 （米）和时长 （分钟）
-     * @param depLongitude
-     * @param depLatiude
-     * @param destLongitude
-     * @param destLatiude
-     * @return
+     * @Author: Charley_Zhang
+     * @MethodName: driving
+     * @param: depLongitude
+     * @param: depLatiude
+     * @param: destLongitude
+     * @param: destLatiude
+     * @paramType [java.lang.String, java.lang.String, java.lang.String, java.lang.String]
+     * @return: com.charley.internalcommon.dto.ResponseResult
+     * @Date: 2023/2/27 0:28
+     * @Description: 根据起点经纬度和终点经纬度获取距离 （米）和时长 （分钟）
      */
-    public ResponseResult driving(String depLongitude, String depLatiude, String destLongitude, String destLatiude){
+    public ResponseResult driving(String depLongitude, String depLatiude, String destLongitude, String destLatiude) {
 
         log.info("DirectionService 的 driving 执行");
 
         // 调用第三方地图接口
         DirectionResponse direction = mapDirectionClient.direction(depLongitude, depLatiude, destLongitude, destLatiude);
-        log.info("direction: "+ direction);
+        log.info("direction: " + direction);
 
         return ResponseResult.success(direction);
     }

@@ -7,6 +7,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * @Author Charley_Zhang
+ * @Date 2023/2/27 0:07
+ * @ClassName: TestController
+ * @Version 1.0
+ * @Description: 测试控制
+ */
 @RestController
 public class TestController {
 

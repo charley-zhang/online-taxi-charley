@@ -12,6 +12,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+/**
+ * @Author Charley_Zhang
+ * @Date 2023/2/27 0:24
+ * @ClassName: TerminalController
+ * @Version 1.0
+ * @Description: 终端控制  车辆控制
+ */
 @RestController
 @RequestMapping(value = "/terminal")
 public class TerminalController {
@@ -20,25 +27,33 @@ public class TerminalController {
     private TerminalService terminalService;
 
     /**
-     * 创建终端
-     * @param name
-     * @param desc
-     * @return
+     * @Author: Charley_Zhang
+     * @MethodName: add
+     * @param: name
+     * @param: desc
+     * @paramType [java.lang.String, java.lang.String]
+     * @return: com.charley.internalcommon.dto.ResponseResult<com.charley.internalcommon.reponese.TerminalResponse>
+     * @Date: 2023/2/27 0:24
+     * @Description: 创建终端
      */
     @PostMapping(value = "/add")
-    public ResponseResult<TerminalResponse> add(String name, String desc){
+    public ResponseResult<TerminalResponse> add(String name, String desc) {
         return terminalService.add(name, desc);
     }
 
 
     /**
-     * 终端搜索
-     * @param center
-     * @param radius
-     * @return
+     * @Author: Charley_Zhang
+     * @MethodName: aroundsearch
+     * @param: center
+     * @param: radius
+     * @paramType [java.lang.String, java.lang.Integer]
+     * @return: com.charley.internalcommon.dto.ResponseResult<java.util.List < com.charley.internalcommon.reponese.TerminalResponse>>
+     * @Date: 2023/2/27 0:24
+     * @Description: 终端搜索
      */
     @PostMapping(value = "/aroundsearch")
-    public ResponseResult<List<TerminalResponse>> aroundsearch(String center, Integer radius){
+    public ResponseResult<List<TerminalResponse>> aroundsearch(String center, Integer radius) {
         return terminalService.aroundsearch(center, radius);
     }
 }

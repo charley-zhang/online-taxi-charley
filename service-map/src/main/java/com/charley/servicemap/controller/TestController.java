@@ -11,11 +11,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @Author Charley_Zhang
+ * @Date 2023/2/27 0:24
+ * @ClassName: TestController
+ * @Version 1.0
+ * @Description: 测试控制
+ */
 @RestController
 public class TestController {
 
     @GetMapping(value = "test")
-    public String test(){
+    public String test() {
         return "this is testing service-map moudle";
     }
 
@@ -23,7 +30,7 @@ public class TestController {
     DicDistrictMapper mapper;
 
     @GetMapping(value = "test-map")
-    public String testMap(){
+    public String testMap() {
 
         Map<String, Object> map = new HashMap<>();
         map.put("address_code", "110000");

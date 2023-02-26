@@ -16,6 +16,13 @@ import org.springframework.stereotype.Service;
 
 import java.util.concurrent.TimeUnit;
 
+/**
+ * @Author Charley_Zhang
+ * @Date 2023/2/26 23:57
+ * @ClassName: TokenService
+ * @Version 1.0
+ * @Description: token服务
+ */
 @Service
 public class TokenService {
 
@@ -23,12 +30,21 @@ public class TokenService {
     private StringRedisTemplate stringRedisTemplate;
 
 
-    public ResponseResult refreshToken(String refreshTokenSrc){
+    /**
+     * @Author: Charley_Zhang
+     * @MethodName: refreshToken
+     * @param: refreshTokenSrc
+     * @paramType [java.lang.String]
+     * @return: com.charley.internalcommon.dto.ResponseResult
+     * @Date: 2023/2/26 23:57
+     * @Description: 刷新token
+     */
+    public ResponseResult refreshToken(String refreshTokenSrc) {
 
         // 解析 refreshToken
         TokenResult tokenResult = JwtUtils.checkToken(refreshTokenSrc);
-        if (tokenResult == null){
-            return ResponseResult.fail(CommonStatusEnum.TOKEN_ERROR.getCode(),CommonStatusEnum.TOKEN_ERROR.getValue());
+        if (tokenResult == null) {
+            return ResponseResult.fail(CommonStatusEnum.TOKEN_ERROR.getCode(), CommonStatusEnum.TOKEN_ERROR.getValue());
         }
 
         String phone = tokenResult.getPhone();
@@ -39,8 +55,8 @@ public class TokenService {
         String refreshTokenRedis = stringRedisTemplate.opsForValue().get(refreshTokenkey);
 
         // 校验 refreshToken
-        if ( (StringUtils.isBlank(refreshTokenRedis)) || (!refreshTokenSrc.trim().equals(refreshTokenRedis.trim())) ){
-            return ResponseResult.fail(CommonStatusEnum.TOKEN_ERROR.getCode(),CommonStatusEnum.TOKEN_ERROR.getValue());
+        if ((StringUtils.isBlank(refreshTokenRedis)) || (!refreshTokenSrc.trim().equals(refreshTokenRedis.trim()))) {
+            return ResponseResult.fail(CommonStatusEnum.TOKEN_ERROR.getCode(), CommonStatusEnum.TOKEN_ERROR.getValue());
         }
 
         // 生成双 token
@@ -50,8 +66,8 @@ public class TokenService {
         String accessTokenKey = RedisPrefixUtils.generatorTokenKey(phone, identity, TokenConstants.ACCESS_TOKEN_TYPE);
 
         // 放入redis
-        stringRedisTemplate.opsForValue().set(accessTokenKey, accessToken,30, TimeUnit.DAYS);
-        stringRedisTemplate.opsForValue().set(refreshTokenkey, refreshToken,31,TimeUnit.DAYS);
+        stringRedisTemplate.opsForValue().set(accessTokenKey, accessToken, 30, TimeUnit.DAYS);
+        stringRedisTemplate.opsForValue().set(refreshTokenkey, refreshToken, 31, TimeUnit.DAYS);
 
         // 返回
         TokenResponse tokenResponse = new TokenResponse();

@@ -9,6 +9,13 @@ import com.charley.internalcommon.request.PointRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+/**
+ * @Author Charley_Zhang
+ * @Date 2023/2/26 23:43
+ * @ClassName: PointService
+ * @Version 1.0
+ * @Description: 车辆位置服务
+ */
 @Service
 public class PointService {
 
@@ -18,7 +25,16 @@ public class PointService {
     @Autowired
     private ServiceMapClient serviceMapClient;
 
-    public ResponseResult upload(ApiDriverPointRequest apiDriverPointRequest){
+    /**
+     * @Author: Charley_Zhang
+     * @MethodName: upload
+     * @param: apiDriverPointRequest
+     * @paramType [com.charley.internalcommon.request.ApiDriverPointRequest]
+     * @return: com.charley.internalcommon.dto.ResponseResult
+     * @Date: 2023/2/26 23:43
+     * @Description: 长传车辆经纬度信息
+     */
+    public ResponseResult upload(ApiDriverPointRequest apiDriverPointRequest) {
         // 获取caiId
         Long carId = apiDriverPointRequest.getCarId();
 

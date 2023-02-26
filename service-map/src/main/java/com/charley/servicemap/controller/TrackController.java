@@ -9,6 +9,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * @Author Charley_Zhang
+ * @Date 2023/2/27 0:25
+ * @ClassName: TrackController
+ * @Version 1.0
+ * @Description: 车辆轨迹控制
+ */
 @RestController
 @RequestMapping(value = "/track")
 public class TrackController {
@@ -18,12 +25,16 @@ public class TrackController {
 
 
     /**
-     * 创建轨迹
-     * @param tid
-     * @return
+     * @Author: Charley_Zhang
+     * @MethodName: add
+     * @param: tid
+     * @paramType [java.lang.String]
+     * @return: com.charley.internalcommon.dto.ResponseResult<com.charley.internalcommon.reponese.TrackResponse>
+     * @Date: 2023/2/27 0:25
+     * @Description: 创建轨迹
      */
     @PostMapping(value = "/add")
-    public ResponseResult<TrackResponse> add(String tid){
+    public ResponseResult<TrackResponse> add(String tid) {
         return trackService.add(tid);
     }
 }

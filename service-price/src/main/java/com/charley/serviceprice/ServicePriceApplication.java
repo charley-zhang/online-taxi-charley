@@ -7,6 +7,14 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 
+
+/**
+ * @Author Charley_Zhang
+ * @Date 2023/2/27 1:05
+ * @ClassName: ServicePriceApplication
+ * @Version 1.0
+ * @Description: service-price  启动服务
+ */
 @SpringBootApplication
 @EnableDiscoveryClient
 @EnableFeignClients
