@@ -130,4 +130,36 @@ public class TerminalClient {
 
         return ResponseResult.success(terminalResponsesList);
     }
+
+
+    /**
+     * @Author: Charley_Zhang
+     * @MethodName: trsearch
+     * @param: tid
+     * @param: startTime
+     * @param: endTime
+     * @paramType [java.lang.String, java.lang.Long, java.lang.Long]
+     * @return: com.charley.internalcommon.dto.ResponseResult
+     * @Date: 2023/3/5 0:30
+     * @Description: 轨迹查询
+     */
+    public ResponseResult trsearch(String tid, Long startTime, Long endTime) {
+        // 拼装请求的url
+        StringBuilder url = new StringBuilder();
+        url.append(AmapConfigConstants.TERMINAL_TRSEARCH);
+        url.append("?");
+        url.append("key=" + amapKey);
+        url.append("&sid=" + amapSid);
+        url.append("&tid=" + tid);
+        url.append("&starttime=" + startTime);
+        url.append("&endtime=" + endTime);
+
+        log.info("高德地图查询轨迹请求url：" + url.toString());
+        ResponseEntity<String> forEntity = restTemplate.getForEntity(url.toString(), String.class);
+        log.info("高德地图查询轨迹结果响应：" + forEntity.toString());
+
+
+        return null;
+
+    }
 }

@@ -140,11 +140,11 @@ public class OrderInfo implements Serializable {
     /**
      * 司机到达上车点时间
      */
-    private Date driverArrivedDepartureTime;
+    private LocalDateTime driverArrivedDepartureTime;
     /**
      * 接到乘客，乘客上车时间
      */
-    private Date pickUpPassengerTime;
+    private LocalDateTime pickUpPassengerTime;
     /**
      * 接到乘客，乘客上车经度
      */
@@ -156,7 +156,7 @@ public class OrderInfo implements Serializable {
     /**
      * 乘客下车时间
      */
-    private Date passengerGetoffTime;
+    private LocalDateTime passengerGetoffTime;
     /**
      * 乘客下车经度
      */

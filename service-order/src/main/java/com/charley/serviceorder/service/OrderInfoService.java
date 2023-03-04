@@ -400,7 +400,7 @@ public class OrderInfoService {
      * @paramType [com.charley.internalcommon.request.OrderRequest]
      * @return: com.charley.internalcommon.dto.ResponseResult
      * @Date: 2023/2/26 22:47
-     * @Description: 去接乘客
+     * @Description: 更新订单状态 ---  去接乘客
      */
     public ResponseResult toPickUpPassenger(OrderRequest orderRequest) {
         Long orderId = orderRequest.getOrderId();
@@ -422,5 +422,85 @@ public class OrderInfoService {
         orderInfoMapper.updateById(orderInfo);
 
         return ResponseResult.success("");
+    }
+
+
+    /**
+     * @Author: Charley_Zhang
+     * @MethodName: arrivedDeparture
+     * @param: orderRequest
+     * @paramType [com.charley.internalcommon.request.OrderRequest]
+     * @return: com.charley.internalcommon.dto.ResponseResult
+     * @Date: 2023/3/4 22:28
+     * @Description: 更新订单状态 ---  到达乘客目的地
+     */
+    public ResponseResult arrivedDeparture(OrderRequest orderRequest) {
+        Long orderId = orderRequest.getOrderId();
+
+        QueryWrapper<OrderInfo> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("id", orderId);
+
+        OrderInfo orderInfo = orderInfoMapper.selectOne(queryWrapper);
+        orderInfo.setOrderStatus(OrderConstants.DRIVER_ARRIVED_DEPARTURE);
+
+        orderInfo.setDriverArrivedDepartureTime(LocalDateTime.now());
+        orderInfoMapper.updateById(orderInfo);
+
+        return ResponseResult.success("");
+    }
+
+    /**
+       * @Author: Charley_Zhang
+       * @MethodName: pickUpPassenger
+     * @param: orderRequest
+       * @paramType  [com.charley.internalcommon.request.OrderRequest]
+       * @return:  com.charley.internalcommon.dto.ResponseResult
+       * @Date: 2023/3/4 22:41
+       * @Description:   更新订单状态 ---  司机接到乘客
+       */
+    public ResponseResult pickUpPassenger(OrderRequest orderRequest) {
+        Long orderId = orderRequest.getOrderId();
+
+        QueryWrapper<OrderInfo> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("id", orderId);
+        OrderInfo orderInfo = orderInfoMapper.selectOne(queryWrapper);
+
+        orderInfo.setPickUpPassengerLongitude(orderRequest.getPickUpPassengerLongitude());
+        orderInfo.setPickUpPassengerLatitude(orderRequest.getPickUpPassengerLatitude());
+        orderInfo.setPickUpPassengerTime(LocalDateTime.now());
+        orderInfo.setOrderStatus(OrderConstants.PICK_UP_PASSENGER);
+
+        orderInfoMapper.updateById(orderInfo);
+
+        return ResponseResult.success("");
+    }
+
+
+    /**
+       * @Author: Charley_Zhang
+       * @MethodName: passengerGetoff
+     * @param: orderRequest
+       * @paramType  [com.charley.internalcommon.request.OrderRequest]
+       * @return:  com.charley.internalcommon.dto.ResponseResult
+       * @Date: 2023/3/4 23:12
+       * @Description:   更新订单状态 ---  司机行程结束，到达目的地
+       */
+    public ResponseResult passengerGetoff(OrderRequest orderRequest) {
+        Long orderId = orderRequest.getOrderId();
+
+        QueryWrapper<OrderInfo> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("id", orderId);
+        OrderInfo orderInfo = orderInfoMapper.selectOne(queryWrapper);
+
+        orderInfo.setPassengerGetoffLongitude(orderRequest.getPassengerGetoffLongitude());
+        orderInfo.setPassengerGetoffLatitude(orderRequest.getPassengerGetoffLatitude());
+        orderInfo.setPassengerGetoffTime(LocalDateTime.now());
+        orderInfo.setOrderStatus(OrderConstants.PASSENGER_GETOFF);
+
+        // 订单行驶路程和时间
+        orderInfoMapper.updateById(orderInfo);
+
+        return ResponseResult.success("");
+
     }
 }

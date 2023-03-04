@@ -52,16 +52,64 @@ public class OrderInfoController {
 
 
     /**
+     * @Author: Charley_Zhang
+     * @MethodName: changeStatus
+     * @param: orderRequest
+     * @paramType [com.charley.internalcommon.request.OrderRequest]
+     * @return: com.charley.internalcommon.dto.ResponseResult
+     * @Date: 2023/2/27 0:41
+     * @Description: 更新订单状态 --- 去接乘客
+     */
+    @PostMapping(value = "/to-pick-up-passenger")
+    public ResponseResult changeStatus(@RequestBody OrderRequest orderRequest) {
+        return orderInfoService.toPickUpPassenger(orderRequest);
+    }
+
+
+    /**
+     * @Author: Charley_Zhang
+     * @MethodName: arrivedDeparture
+     * @param: orderRequest
+     * @paramType [com.charley.internalcommon.request.OrderRequest]
+     * @return: com.charley.internalcommon.dto.ResponseResult
+     * @Date: 2023/3/4 22:27
+     * @Description: 更新订单状态 ---  到达乘客目的地
+     */
+    @PostMapping(value = "/arrived-departure")
+    public ResponseResult arrivedDeparture(@RequestBody OrderRequest orderRequest) {
+        return orderInfoService.arrivedDeparture(orderRequest);
+    }
+
+
+    /**
        * @Author: Charley_Zhang
-       * @MethodName: changeStatus
+       * @MethodName: pickUpPassenger
      * @param: orderRequest
        * @paramType  [com.charley.internalcommon.request.OrderRequest]
        * @return:  com.charley.internalcommon.dto.ResponseResult
-       * @Date: 2023/2/27 0:41
-       * @Description:   更新订单状态
+       * @Date: 2023/3/4 22:42
+       * @Description:   更新订单状态 ---  司机接到乘客
        */
-    @PostMapping(value = "/to-pick-up-passenger")
-    public ResponseResult changeStatus(@RequestBody OrderRequest orderRequest){
-        return orderInfoService.toPickUpPassenger(orderRequest);
+    @PostMapping(value = "/pick-up-passenger")
+    public ResponseResult pickUpPassenger(@RequestBody OrderRequest orderRequest) {
+        return orderInfoService.pickUpPassenger(orderRequest);
     }
+
+
+
+    /**
+       * @Author: Charley_Zhang
+       * @MethodName: passengerGetoff
+     * @param: orderRequest
+       * @paramType  [com.charley.internalcommon.request.OrderRequest]
+       * @return:  com.charley.internalcommon.dto.ResponseResult
+       * @Date: 2023/3/4 23:11
+       * @Description:   更新订单状态 ---  司机行程结束, 乘客到达目的地
+       */
+    @PostMapping(value = "/passenger-getoff")
+    public ResponseResult passengerGetoff(@RequestBody OrderRequest orderRequest) {
+        return orderInfoService.passengerGetoff(orderRequest);
+    }
+
+
 }
