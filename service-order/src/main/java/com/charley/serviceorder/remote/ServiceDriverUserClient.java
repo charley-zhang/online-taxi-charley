@@ -38,7 +38,7 @@ public interface ServiceDriverUserClient {
      * @Date: 2023/2/27 0:43
      * @Description: 根据 carId 查询是否有多余的可派单司机
      */
-    @GetMapping(value = "/get-available-driver{carId}")
+    @RequestMapping(method = RequestMethod.GET, value = "/get-available-driver/{carId}")
     public ResponseResult<OrderDriverResponse> getAvailableDriver(@PathVariable("carId") Long carId);
 
     /**

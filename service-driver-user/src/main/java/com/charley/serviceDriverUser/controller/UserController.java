@@ -97,7 +97,7 @@ public class UserController {
      * @Date: 2023/2/27 0:08
      * @Description: 根据车辆 ID，查询可以派单的司机的信息
      */
-    @GetMapping(value = "/get-available-driver{carId}")
+    @GetMapping(value = "/get-available-driver/{carId}")
     public ResponseResult<OrderDriverResponse> getAvailableDriver(@PathVariable("carId") Long carId) {
         return driverUserService.getAvailableDriver(carId);
     }

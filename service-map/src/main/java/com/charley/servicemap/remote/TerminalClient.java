@@ -4,6 +4,7 @@ package com.charley.servicemap.remote;
 import com.charley.internalcommon.constant.AmapConfigConstants;
 import com.charley.internalcommon.dto.ResponseResult;
 import com.charley.internalcommon.reponese.TerminalResponse;
+import com.charley.internalcommon.reponese.TrsearchResponse;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -143,7 +144,7 @@ public class TerminalClient {
      * @Date: 2023/3/5 0:30
      * @Description: 轨迹查询
      */
-    public ResponseResult trsearch(String tid, Long startTime, Long endTime) {
+    public ResponseResult<TrsearchResponse> trsearch(String tid, Long startTime, Long endTime) {
         // 拼装请求的url
         StringBuilder url = new StringBuilder();
         url.append(AmapConfigConstants.TERMINAL_TRSEARCH);
@@ -158,8 +159,29 @@ public class TerminalClient {
         ResponseEntity<String> forEntity = restTemplate.getForEntity(url.toString(), String.class);
         log.info("高德地图查询轨迹结果响应：" + forEntity.toString());
 
+        JSONObject result = JSONObject.fromObject(forEntity.getBody());
+        JSONObject data = result.getJSONObject("data");
+        int counts = data.getInt("counts");
+        if (counts == 0){
+            return null;
+        }
+        JSONArray tracks = data.getJSONArray("tracks");
+        long driveMile = 0L;
+        long driveTime = 0L;
+        for (int i = 0; i < tracks.size(); i++) {
+            JSONObject jsonObject = tracks.getJSONObject(i);
+            long distance = jsonObject.getLong("distance");
+            driveMile = driveMile + distance;
+            long time = jsonObject.getLong("time");
+            time = time / (1000 * 60);
+            driveTime = driveTime + time;
+        }
 
-        return null;
+        TrsearchResponse trsearchResponse = new TrsearchResponse();
+        trsearchResponse.setDriveMile(driveMile);
+        trsearchResponse.setDriveTime(driveTime);
+
+        return ResponseResult.success(trsearchResponse);
 
     }
 }

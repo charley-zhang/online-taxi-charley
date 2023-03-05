@@ -3,6 +3,7 @@ package com.charley.servicemap.controller;
 
 import com.charley.internalcommon.dto.ResponseResult;
 import com.charley.internalcommon.reponese.TerminalResponse;
+import com.charley.internalcommon.reponese.TrsearchResponse;
 import com.charley.servicemap.service.TerminalService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -70,7 +71,7 @@ public class TerminalController {
      * @Description: 轨迹查询
      */
     @PostMapping(value = "/trsearch")
-    public ResponseResult trsearch(String tid, Long startTime, Long endTime) {
+    public ResponseResult<TrsearchResponse> trsearch(String tid, Long startTime, Long endTime) {
         return terminalService.trsearch(tid, startTime, endTime);
     }
 

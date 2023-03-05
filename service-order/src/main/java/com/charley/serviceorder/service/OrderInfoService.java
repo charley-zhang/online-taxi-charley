@@ -11,6 +11,7 @@ import com.charley.internalcommon.dto.PriceRule;
 import com.charley.internalcommon.dto.ResponseResult;
 import com.charley.internalcommon.reponese.OrderDriverResponse;
 import com.charley.internalcommon.reponese.TerminalResponse;
+import com.charley.internalcommon.reponese.TrsearchResponse;
 import com.charley.internalcommon.request.OrderRequest;
 import com.charley.internalcommon.request.PriceRuleIsNewRequest;
 import com.charley.internalcommon.util.RedisPrefixUtils;
@@ -30,6 +31,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -414,8 +416,8 @@ public class OrderInfoService {
         OrderInfo orderInfo = orderInfoMapper.selectOne(queryWrapper);
 
         orderInfo.setToPickUpPassengerAddress(toPickUpPassengerAddress);
-        orderInfo.setPickUpPassengerLongitude(toPickUpPassengerLongitude);
-        orderInfo.setPickUpPassengerLatitude(toPickUpPassengerLatitude);
+        orderInfo.setToPickUpPassengerLongitude(toPickUpPassengerLongitude);
+        orderInfo.setToPickUpPassengerLatitude(toPickUpPassengerLatitude);
         orderInfo.setToPickUpPassengerTime(LocalDateTime.now());
         orderInfo.setOrderStatus(OrderConstants.DRIVER_TO_PICK_UP_PASSENGER);
 
@@ -432,7 +434,7 @@ public class OrderInfoService {
      * @paramType [com.charley.internalcommon.request.OrderRequest]
      * @return: com.charley.internalcommon.dto.ResponseResult
      * @Date: 2023/3/4 22:28
-     * @Description: 更新订单状态 ---  到达乘客目的地
+     * @Description: 更新订单状态 ---  到达乘客上车点
      */
     public ResponseResult arrivedDeparture(OrderRequest orderRequest) {
         Long orderId = orderRequest.getOrderId();
@@ -498,8 +500,19 @@ public class OrderInfoService {
         orderInfo.setOrderStatus(OrderConstants.PASSENGER_GETOFF);
 
         // 订单行驶路程和时间
-        orderInfoMapper.updateById(orderInfo);
+        ResponseResult<Car> carById = serviceDriverUserClient.getCarById(orderInfo.getCarId());
+        Long startTime = orderInfo.getPickUpPassengerTime().toInstant(ZoneOffset.of("+8")).toEpochMilli();
+        Long endTime = LocalDateTime.now().toInstant(ZoneOffset.of("+8")).toEpochMilli();
 
+        log.info("开始时间："+ startTime +",结束时间：" + endTime);
+
+        ResponseResult<TrsearchResponse> trsearch = serviceMapClient.trsearch(carById.getData().getTid(), startTime, endTime);
+        TrsearchResponse data = trsearch.getData();
+        orderInfo.setDriveMile(data.getDriveMile());
+        orderInfo.setDriveTime(data.getDriveTime());
+
+
+        orderInfoMapper.updateById(orderInfo);
         return ResponseResult.success("");
 
     }

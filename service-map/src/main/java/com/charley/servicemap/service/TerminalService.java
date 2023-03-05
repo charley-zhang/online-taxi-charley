@@ -2,6 +2,7 @@ package com.charley.servicemap.service;
 
 import com.charley.internalcommon.dto.ResponseResult;
 import com.charley.internalcommon.reponese.TerminalResponse;
+import com.charley.internalcommon.reponese.TrsearchResponse;
 import com.charley.servicemap.remote.TerminalClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -60,7 +61,7 @@ public class TerminalService {
      * @Date: 2023/3/5 0:28
      * @Description: 轨迹查询
      */
-    public ResponseResult trsearch(String tid, Long startTime, Long endTime) {
+    public ResponseResult<TrsearchResponse> trsearch(String tid, Long startTime, Long endTime) {
         return terminalClient.trsearch(tid, startTime, endTime);
     }
 }
